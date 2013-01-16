@@ -1,13 +1,14 @@
 breed [person persons]
 breed [corporation corporations]
 turtles-own [capital funding workers wage price]
-globals[]
+globals[fed]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
 end
 
 to setup
   ca
+  set fed [1]
   create-person 50 
          [set shape "person"
           set capital 100
@@ -26,6 +27,9 @@ to setup
    
 end
 to free_bank
+end
+to abolish_fed
+  set fed []
 end
 
 to-report supply
@@ -450,12 +454,12 @@ PENS
 "Supply" 1.0 0 -16777216 true "plot supply" "plot supply"
 
 SLIDER
-16
+15
 53
-188
+187
 86
-interest_rates
-interest_rates
+fed_interest_rates
+fed_interest_rates
 0
 15
 15
@@ -480,6 +484,38 @@ NIL
 NIL
 NIL
 1
+
+BUTTON
+686
+450
+782
+483
+Abolish FED
+abolish_fed
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+16
+205
+198
+238
+capital_gains_tax_rates
+capital_gains_tax_rates
+0
+25
+18.5
+0.5
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## Instructions
