@@ -237,7 +237,7 @@ true
 false
 "" ""
 PENS
-"unemployment_rate" 1.0 0 -16777216 true "ask turtles[plot unemployment_rate]" "ask turtles[plot unemployment_rate]"
+"unemployment_rate" 1.0 0 -16777216 true "ask turtles[plot unemployment_rate]" "plot unemployment_rate"
 "inflation_rate" 1.0 0 -7500403 true "plot inflation_rate" "plot inflation_rate"
 
 PLOT
