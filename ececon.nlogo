@@ -25,6 +25,9 @@ to setup
 
    
 end
+to free_bank
+end
+
 to-report supply
   report 1
   ;report (sum [wage] of turtles) * workers
@@ -445,6 +448,38 @@ false
 "" ""
 PENS
 "Supply" 1.0 0 -16777216 true "plot supply" "plot supply"
+
+SLIDER
+16
+53
+188
+86
+interest_rates
+interest_rates
+0
+15
+15
+0.1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+1087
+289
+1190
+322
+Free Banking
+free_bank
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## Instructions
