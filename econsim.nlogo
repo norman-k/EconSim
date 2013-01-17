@@ -120,6 +120,10 @@ end
 to-report aggregate_capital
   report ((capital * count person) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
 end     
+to-report gross_investment
+  report 0
+  ;reports money used to make something, will change later
+end
 
   
 @#$#@#$#@
@@ -239,10 +243,10 @@ NIL
 1
 
 PLOT
-903
-333
-1103
-483
+827
+332
+1027
+482
 Phillips Curve
 Unemployment Rate
 Inflation Rate
@@ -274,7 +278,7 @@ false
 "" ""
 PENS
 "interest_rates" 1.0 0 -16777216 true "plot fed_interest_rates" "plot fed_interest_rates"
-"GDP" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital - deficit]" "ask turtles[plot aggregate_capital - deficit]"
+"GDP" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital + entitlement_spending + gross_investment]" "ask turtles[plot aggregate_capital + entitlement_spending + gross_investment]"
 
 SLIDER
 16
@@ -312,10 +316,10 @@ Reaganomist\nYour public appeal automatically boosts supply and lowers tax rates
 1
 
 PLOT
-1128
-333
-1328
-483
+1041
+332
+1241
+482
 Laffer Curve
 Tax Revenue
 Tax Rate
@@ -540,7 +544,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-73
+25
 1
 1
 NIL
@@ -660,7 +664,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-13
+75000
 1
 1
 NIL
@@ -677,10 +681,10 @@ NIL
 1
 
 PLOT
-1335
-172
-1535
-322
+1255
+332
+1455
+482
 Income Inequality
 Aggregate Pop.
 Aggregate Wealth
@@ -694,6 +698,16 @@ false
 PENS
 "aggregate_pop" 1.0 0 -16777216 true "ask person[plot count turtles]" "ask person[plot count turtles]"
 "aggregate_wealth" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital]" "ask turtles[plot aggregate_capital]"
+
+TEXTBOX
+1343
+83
+1493
+111
+Since sim. is closed system (exports - imports) = 0.
+11
+0.0
+1
 
 @#$#@#$#@
 ## Instructions
