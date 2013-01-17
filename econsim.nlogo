@@ -1,7 +1,7 @@
 breed [person persons]
 breed [corporation corporations]
 breed [bank banks]
-turtles-own [capital funding workers wage price state inflation]
+turtles-own [capital funding workers wage price state inflation gov_spending]
 globals[fed]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
@@ -53,8 +53,16 @@ to go
   
 end
 to stimulus
-  ask turtles[set capital capital + 5 
-              ]
+  ask turtles[reset-timer
+    if timer < 7[set capital capital + 5
+                 set price price + 1
+                 set entitlement_spending entitlement_spending + 10
+    ]
+    if timer >= 7[set capital capital - 4
+                  set price price - 2
+                  set entitlement_spending entitlement_spending - 10
+    ]
+  ]
   ;add: increases the inflation rate to 5%, and increases capital, along with workers. But lowers wage and after 7 seconds inflation and worker increase stops and GDP goes down.
 end
 to gold
@@ -100,7 +108,7 @@ to-report tax_revenue
 end
 to-report deficit
   let g 0
-  set g 50000
+  set g (entitlement_spending - tax_revenue)
   report g
 end
 to-report debt
@@ -469,7 +477,7 @@ fed_interest_rates
 fed_interest_rates
 0
 15
-8.8
+0
 0.1
 1
 NIL
@@ -544,7 +552,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-25
+0
 1
 1
 NIL
@@ -559,7 +567,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-0
+100
 1
 1
 NIL
@@ -656,15 +664,15 @@ GDP = private consumption + gross investment + government spending + (exports âˆ
 1
 
 SLIDER
-828
-501
-1063
-534
+210
+482
+445
+515
 entitlement_spending
 entitlement_spending
 0
 100000
-75000
+22273
 1
 1
 NIL
@@ -705,6 +713,16 @@ TEXTBOX
 1493
 111
 Since sim. is closed system (exports - imports) = 0.
+11
+0.0
+1
+
+TEXTBOX
+463
+485
+613
+513
+Money Gov. spends on social services
 11
 0.0
 1
