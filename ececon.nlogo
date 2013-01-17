@@ -1,5 +1,6 @@
 breed [person persons]
 breed [corporation corporations]
+breed [bank banks]
 turtles-own [capital funding workers wage price]
 globals[fed]
 
@@ -516,6 +517,17 @@ capital_gains_tax_rates
 1
 NIL
 HORIZONTAL
+
+SWITCH
+16
+375
+185
+408
+regressive_tax_rate
+regressive_tax_rate
+1
+1
+-1000
 
 @#$#@#$#@
 ## Instructions
