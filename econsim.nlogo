@@ -732,17 +732,6 @@ Money Gov. spends on social services
 0.0
 1
 
-MONITOR
-105
-10
-162
-55
-NIL
-stimulus
-17
-1
-11
-
 SLIDER
 677
 168
