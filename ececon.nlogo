@@ -1,7 +1,7 @@
 breed [person persons]
 breed [corporation corporations]
 breed [bank banks]
-turtles-own [capital funding workers wage price]
+turtles-own [capital funding workers wage price state inflation]
 globals[fed]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
@@ -28,6 +28,7 @@ to setup
    
 end
 to free_bank
+  set corporate_tax_rates 0 
 end
 to abolish_fed
   set fed []
@@ -49,16 +50,18 @@ to go
   ask person[wiggle]
   ask turtles[setup-plots]
   
-  ;stuff
+  
 end
 to stimulus
-  ;increases the inflation rate to 5%, and increases capital, along with workers. But lowers wage and after 7 seconds inflation and worker increase stops and GDP goes done.
+  ask turtles[set capital capital + 5 
+              ]
+  ;add: increases the inflation rate to 5%, and increases capital, along with workers. But lowers wage and after 7 seconds inflation and worker increase stops and GDP goes down.
 end
 to gold
   ;reduces inflation rate/increase in percentage of capital to 0.25% from 2%
 end
 to austerity
-  ;lowers governmetn spending and raises tax rates
+  ;lowers government spending and raises tax rates
 end
 to nit
   ;10% of person turtles have no income tax 10% gain capital and 80% lose by the amount determined by the slider 
@@ -73,23 +76,31 @@ to recapitalize
   ;if funding lower than some amount have a random corporation with more funding buy that company 
 end
 to-report unemployment_rate
-  report 45
-  ;ask person[if wage > 0[report (50 - count turtles)]]
+     report ((count person with[ wage = 0]) / (count turtles) * 100)
 end
 to set_wage
   ifelse random(50) > 40
-     [set wage 30]
+     [set capital 30]
      [ifelse random(50) > 5
-       [set wage 10]
-       [set wage 0]
+       [set capital 10]
+       [set capital 0]
      ]
 end
+to-report number_lb_people
+  report count person with[ wage < lb_threshold]
+end
+to-report number_mb_people
+  report count person with[ wage > mb_threshold and wage < hb_threshold]
+end
+to-report number_hb_people
+  report count person with[ wage > hb_threshold]
+end
 to-report tax_revenue
-  report (income_tax_rates * count person) + (corporate_tax_rates * count corporation)
+  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporation)
 end
 to-report deficit
   let g 0
-  set g tax_revenue
+  set g 50000
   report g
 end
 to-report debt
@@ -99,11 +110,16 @@ to-report debt
   report g
 end
 to-report inflation_rate
-  let g 0
-  report 0
+  let A 5; price
+  let B 6; CPI
+  report ((( B - A) / A) * 100)
 end
-
-     
+to-report CPI ;Consumer_Price_Index
+  report 500; not correct value
+end
+to-report aggregate_capital
+  report ((capital * count person) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
+end     
 
   
 @#$#@#$#@
@@ -141,7 +157,7 @@ BUTTON
 282
 Nationalize the Banks!
 stimulus
-NIL
+T
 1
 T
 OBSERVER
@@ -239,7 +255,7 @@ false
 "" ""
 PENS
 "unemployment_rate" 1.0 0 -16777216 true "ask turtles[plot unemployment_rate]" "plot unemployment_rate"
-"inflation_rate" 1.0 0 -7500403 true "plot inflation_rate" "plot inflation_rate"
+"inflation_rate" 1.0 0 -7500403 true "ask turtles[plot inflation_rate]" "ask turtles[plot inflation_rate]"
 
 PLOT
 1119
@@ -257,22 +273,8 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles"
-
-SLIDER
-16
-106
-188
-139
-income_tax_rates
-income_tax_rates
-0
-100
-22
-1
-1
-NIL
-HORIZONTAL
+"interest_rates" 1.0 0 -16777216 true "plot fed_interest_rates" "plot fed_interest_rates"
+"GDP" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital - deficit]" "ask turtles[plot aggregate_capital - deficit]"
 
 SLIDER
 16
@@ -326,7 +328,7 @@ false
 "" ""
 PENS
 "tax_revenue" 1.0 0 -16777216 true "plot tax_revenue" "plot tax_revenue"
-"tax_rate" 1.0 0 -7500403 true "plot income_tax_rates" "plot income_tax_rates"
+"tax_rate" 1.0 0 -7500403 true "plot 100" "plot 100"
 
 BUTTON
 685
@@ -408,7 +410,7 @@ deficit
 11
 
 MONITOR
-1262
+1261
 255
 1319
 300
@@ -463,7 +465,7 @@ fed_interest_rates
 fed_interest_rates
 0
 15
-15
+8.8
 0.1
 1
 NIL
@@ -506,28 +508,192 @@ NIL
 SLIDER
 16
 205
-198
+188
 238
 capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-18.5
+0
 0.5
 1
 NIL
 HORIZONTAL
 
 SWITCH
-16
+6
 375
-185
+205
 408
 regressive_tax_rate
 regressive_tax_rate
 1
 1
 -1000
+
+SLIDER
+88
+530
+284
+563
+lb_income_tax_rates
+lb_income_tax_rates
+0
+100
+0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+320
+530
+527
+563
+mb_income_tax_rates
+mb_income_tax_rates
+0
+100
+0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+564
+530
+766
+563
+hb_income_tax_rates
+hb_income_tax_rates
+0
+100
+0
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+352
+590
+502
+650
+lb = lower bracket\nmb = middle bracket\nhb = high bracket\n
+16
+0.0
+1
+
+SLIDER
+85
+690
+280
+723
+lb_threshold
+lb_threshold
+0
+100
+11
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+318
+690
+525
+723
+mb_threshold
+mb_threshold
+0
+100
+11
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+566
+690
+770
+723
+hb_threshold
+hb_threshold
+0
+100
+25
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+40
+419
+190
+479
+Puts a ceiling cap on what salary income tax can go up to
+16
+0.0
+1
+
+TEXTBOX
+1344
+121
+1494
+160
+GDP = private consumption + gross investment + government spending + (exports − imports)
+10
+0.0
+1
+
+SLIDER
+828
+501
+1063
+534
+entitlement_spending
+entitlement_spending
+0
+100000
+13
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+897
+514
+1047
+534
+NIL
+16
+0.0
+1
+
+PLOT
+1335
+172
+1535
+322
+Income Inequality
+Aggregate Pop.
+Aggregate Wealth
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"aggregate_pop" 1.0 0 -16777216 true "ask person[plot count turtles]" "ask person[plot count turtles]"
+"aggregate_wealth" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital]" "ask turtles[plot aggregate_capital]"
 
 @#$#@#$#@
 ## Instructions
@@ -551,7 +717,8 @@ Norman make the shapes for corporations and people. He made the people wiggle ar
 **1/14/13**
 **1/15/13**
 
-
+##LearnMore
+http://jsher.myclassupdates.com/sitebuildercontent/sitebuilderfiles/feng.pdf
 ## Credits
 
 Norman Kontarovich
@@ -872,7 +1039,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.3
+NetLogo 5.0.2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
