@@ -1,7 +1,7 @@
 breed [person persons]
 breed [corporation corporations]
 breed [bank banks]
-turtles-own [capital funding workers wage price state inflation gov_spending]
+turtles-own [capital funding workers wage price state inflation gov_spending bank_rate]
 globals[fed]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
@@ -22,6 +22,13 @@ to setup
           set size 5
           setxy random-xcor random-ycor
           set price 5.00
+         ]
+   create-bank 2
+         [set shape "bank"
+          set funding ((capital * ((count person) / 2)) / 10)
+          set size 5
+          setxy random-xcor random-ycor
+          set bank_rate 2
          ]
    ask turtles[setup-plots]
 
@@ -49,8 +56,6 @@ end
 to go
   ask person[wiggle]
   ask turtles[setup-plots]
-  
-  
 end
 to stimulus
   ask turtles[reset-timer
@@ -169,7 +174,7 @@ BUTTON
 282
 Nationalize the Banks!
 stimulus
-T
+NIL
 1
 T
 OBSERVER
@@ -214,20 +219,20 @@ NIL
 1
 
 TEXTBOX
-685
-191
-834
-240
+684
+204
+833
+253
 Keynesian:\nRemember, in the long run we're all dead!
 11
 0.0
 1
 
 TEXTBOX
-898
-191
-1048
-219
+896
+208
+1046
+236
 Monetarist:\nInvest in Gold!
 11
 0.0
@@ -297,7 +302,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-0
+100
 1
 1
 NIL
@@ -315,9 +320,9 @@ Austrians\nDon't pay attention to the graphs above! They're just black magic.
 
 TEXTBOX
 689
-339
+346
 839
-395
+402
 Reaganomist\nYour public appeal automatically boosts supply and lowers tax rates 10%\n
 11
 0.0
@@ -552,7 +557,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-0
+100
 1
 1
 NIL
@@ -672,7 +677,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-22273
+2179120
 1
 1
 NIL
@@ -727,6 +732,32 @@ Money Gov. spends on social services
 0.0
 1
 
+MONITOR
+105
+10
+162
+55
+NIL
+stimulus
+17
+1
+11
+
+SLIDER
+677
+168
+842
+201
+set_stimulus
+set_stimulus
+0
+100000
+0
+1
+1
+NIL
+HORIZONTAL
+
 @#$#@#$#@
 ## Instructions
 
@@ -769,6 +800,14 @@ arrow
 true
 0
 Polygon -7500403 true true 150 0 0 150 105 150 105 293 195 293 195 150 300 150
+
+bank
+true
+0
+Rectangle -13840069 true false 90 135 210 195
+Rectangle -6459832 true false 120 90 180 135
+Rectangle -955883 true false 135 165 165 195
+Rectangle -2674135 true false 135 150 165 165
 
 box
 false
