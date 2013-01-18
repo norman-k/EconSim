@@ -183,7 +183,7 @@ end
 to-report beta
   report 0.1
 end
-;to-report intertemporal_utility_function BEEP KRUGMAN
+;to-report intertemporal_utility_function 
 ;report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (government_spending) - (kappa * ((l) ^ 2))))))
 ;end
 to-report total_borrowing
@@ -670,7 +670,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-100
+38
 1
 1
 NIL
@@ -700,7 +700,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-21
+41
 1
 1
 NIL
@@ -790,7 +790,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-81364
+29545
 1
 1
 NIL
