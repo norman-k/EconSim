@@ -1,7 +1,7 @@
 breed [person persons]
 breed [corporation corporations]
 breed [bank banks]
-turtles-own [capital funding workers wage price state inflation gov_spending bank_rate]
+turtles-own [capital funding workers wage price state inflation gov_spending bank_rate firm_spent person_spent]
 globals[fed]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
@@ -133,10 +133,6 @@ end
 to-report aggregate_capital
   report ((capital * count person) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
 end     
-to-report gross_investment
-  report 0
-  ;reports money used to make something, will change later
-end
 
 to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous spending if income levels were zero c1 is the marginal propensity to consume
   report ((total_saving - total_borrowing) * count person) + (MPC * aggregate_capital)
@@ -184,10 +180,20 @@ end
 ;  let h ((aggregate_capital) / (5 * 50))
 ;  report h
 ;end
+to-report change_in_savings
+  reset-timer
+  let h (total_saving * (count person))
+  if timer <= 4[
+     report h]
+  
+  if timer > 5[let z ((total_saving * (count person)) - h)
+    report z]
+  if timer > 10[reset-timer]
+end
 to-report change_in_income
   reset-timer
+  let h (aggregate_capital * (count person))
   if timer <= 4[
-     let h (aggregate_capital * (count person))
      report h]
   
   if timer > 5[let z ((aggregate_capital * (count person)) - h)
@@ -200,7 +206,22 @@ end
 to-report MPC; slope of consumption schedule
   report (1 - MPS)
 end
-
+;to-report GDP
+to-report aggregate_firm_spent
+  report ((capital * count corporation) + 1) / 40
+end
+to-report aggregate_person_spent
+  report ((capital * count person) + 1) / 40
+end
+to-report invest_per_person
+  report random(capital)
+end
+to-report I
+  report aggregate_firm_spent + aggregate_person_spent + invest_per_person
+end
+to-report Gv
+  report entitlement_spending
+end 
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -353,7 +374,7 @@ false
 "" ""
 PENS
 "interest_rates" 1.0 0 -16777216 true "plot fed_interest_rates" "plot fed_interest_rates"
-"GDP" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital + entitlement_spending + gross_investment]" "ask turtles[plot aggregate_capital + entitlement_spending + gross_investment]"
+"GDP" 1.0 0 -7500403 true "ask turtles[plot C + Gv + I]" "ask turtles[plot C + Gv + I]"
 
 SLIDER
 16
@@ -364,7 +385,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-100
+0
 1
 1
 NIL
@@ -619,7 +640,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-45
+76
 1
 1
 NIL
@@ -649,7 +670,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-100
+89
 1
 1
 NIL
@@ -739,7 +760,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-92769
+6818
 1
 1
 NIL
