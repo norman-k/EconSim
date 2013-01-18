@@ -142,7 +142,7 @@ to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous sp
   report ((total_saving - total_borrowing) * count person) + (MPC * aggregate_capital)
 end
 to-report M
-  report (capital * count person)
+  report (100 * 50)
 end  
 to-report G
     report entitlement_spending 
@@ -162,7 +162,10 @@ end
 to-report v
   report 1
 end
-to-report temporal_utility_function
+to-report beta
+  report 0.1
+end
+to-report intertemporal_utility_function
 report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (G) - (kappa * ((l) ^ 2))))) +
  (((beta ^ 1) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * G) - (kappa * ((l) ^ 2))))) + 
  (((beta ^ 2) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * G) - (kappa * ((l) ^ 2))))) + 
@@ -170,12 +173,11 @@ report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (G) - (kappa * (
  (((beta ^ 4) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * G) - (kappa * ((l) ^ 2))))))
 
 end
-to-report beta
-  report 0.1
-end
 to-report total_borrowing
+  report capital
 end
 to-report total_saving
+  report capital
 end
 to-report total_income
   report aggregate_capital
@@ -184,11 +186,11 @@ to-report MPC ;marginal propensity to consume
    report change_in_consumption / change_in_income
 end
 to-report change_in_consumption
-  let h (aggregate_capital / (price * count person))
+  let h ((aggregate_capital) / (5 * 50))
   report h
 end
 to-report change_in_income
-  let h (capital * count person)
+  let h (100 * 50)
   report h
 end
 
@@ -610,7 +612,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-100
+44
 1
 1
 NIL
@@ -625,7 +627,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-100
+92
 1
 1
 NIL
@@ -730,7 +732,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-20000
+71364
 1
 1
 NIL
@@ -799,6 +801,24 @@ set_stimulus
 1
 NIL
 HORIZONTAL
+
+PLOT
+829
+496
+1029
+646
+Utility Function Over 4 Years
+Utility
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "ask turtles[plot intertemporal_utility_function]" "ask turtles[plot intertemporal_utility_function]"
 
 @#$#@#$#@
 ## Instructions
