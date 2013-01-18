@@ -182,26 +182,26 @@ end
 ;end
 to-report change_in_savings
   reset-timer
-  let h (total_saving * (count person))
+  let h (total_saving * ((count person) + 1))
   if timer <= 4[
      report h]
   
-  if timer > 5[let z ((total_saving * (count person)) - h)
+  if timer > 5[let z ((total_saving * ((count person) + 1)) - h)
     report z]
   if timer > 10[reset-timer]
 end
 to-report change_in_income
   reset-timer
-  let h (aggregate_capital * (count person))
+  let h (aggregate_capital * ((count person) + 1))
   if timer <= 4[
      report h]
   
-  if timer > 5[let z ((aggregate_capital * (count person)) - h)
+  if timer > 5[let z ((aggregate_capital * ((count person) + 1)) - h)
     report z]
   if timer > 10[reset-timer]
 end
 to-report MPS; slope of savings schedule
-  report change_in_savings / change_in_income 
+  report change_in_savings / (change_in_income + .000000001)
 end
 to-report MPC; slope of consumption schedule
   report (1 - MPS)
@@ -252,12 +252,12 @@ ticks
 
 BUTTON
 685
-249
+246
 839
-282
+279
 Nationalize the Banks!
 stimulus
-NIL
+T
 1
 T
 OBSERVER
@@ -431,9 +431,9 @@ PENS
 "tax_rate" 1.0 0 -7500403 true "plot 100" "plot 100"
 
 BUTTON
-685
-292
-821
+686
+290
+822
 325
 Austerity
 austerity
@@ -640,7 +640,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-76
+0
 1
 1
 NIL
@@ -655,7 +655,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-100
+0
 1
 1
 NIL
@@ -670,7 +670,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-89
+0
 1
 1
 NIL
@@ -695,7 +695,7 @@ lb_threshold
 lb_threshold
 0
 100
-11
+1
 1
 1
 NIL
@@ -710,7 +710,7 @@ mb_threshold
 mb_threshold
 0
 100
-11
+12
 1
 1
 NIL
@@ -760,7 +760,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-6818
+2315655
 1
 1
 NIL
@@ -844,13 +844,8 @@ The user simply plays around with the income tax rate and corporate tax rate sli
 
 ## Changelog
 
-**1/11/13**
-Norman set up the program.
-**1/12/13**
-Norman make the shapes for corporations and people. He made the people wiggle around till they hit the black door of the corporation and if after 10 seconds they didn't, then went to the closest one. 
-**1/13/13**
-**1/14/13**
-**1/15/13**
+Crowding out effect
+
 
 ##LearnMore
 http://jsher.myclassupdates.com/sitebuildercontent/sitebuilderfiles/feng.pdf
