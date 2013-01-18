@@ -112,15 +112,15 @@ to-report tax_revenue
   report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporation)
 end
 to-report deficit
-  let g 0
-  set g (entitlement_spending - tax_revenue)
-  report g
+  let q 0
+  set q (entitlement_spending - tax_revenue)
+  report q
 end
 to-report debt
-  let g 0
+  let q 0
   let h 0
-  set g deficit * h
-  report g
+  set q deficit * h
+  report q
 end
 to-report inflation_rate
   let A 5; price
@@ -138,7 +138,60 @@ to-report gross_investment
   ;reports money used to make something, will change later
 end
 
-  
+to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous spending if income levels were zero c1 is the marginal propensity to consume
+  report ((total_saving - total_borrowing) * count person) + (MPC * aggregate_capital)
+end
+to-report M
+  report (capital * count person)
+end  
+to-report G
+    report entitlement_spending 
+end
+to-report L ; labor effort
+  report 0.6
+end
+to-report kappa
+  report ((inflation_rate / 100) / 4)
+end
+to-report chi
+  report 1
+end
+to-report p
+  report 1
+end
+to-report v
+  report 1
+end
+to-report temporal_utility_function
+report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (G) - (kappa * ((l) ^ 2))))) +
+ (((beta ^ 1) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * G) - (kappa * ((l) ^ 2))))) + 
+ (((beta ^ 2) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * G) - (kappa * ((l) ^ 2))))) + 
+ (((beta ^ 3) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * G) - (kappa * ((l) ^ 2))))) + 
+ (((beta ^ 4) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * G) - (kappa * ((l) ^ 2))))))
+
+end
+to-report beta
+  report 0.1
+end
+to-report total_borrowing
+end
+to-report total_saving
+end
+to-report total_income
+  report aggregate_capital
+end
+to-report MPC ;marginal propensity to consume
+   report change_in_consumption / change_in_income
+end
+to-report change_in_consumption
+  let h (aggregate_capital / (price * count person))
+  report h
+end
+to-report change_in_income
+  let h (capital * count person)
+  report h
+end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -677,7 +730,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-2179120
+20000
 1
 1
 NIL
