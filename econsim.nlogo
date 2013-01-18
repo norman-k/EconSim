@@ -640,7 +640,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-0
+22
 1
 1
 NIL
@@ -760,7 +760,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-2315655
+15909
 1
 1
 NIL
@@ -849,6 +849,15 @@ Crowding out effect
 
 ##LearnMore
 http://jsher.myclassupdates.com/sitebuildercontent/sitebuilderfiles/feng.pdf
+Interesting phenomena to observe:
+- Balanced Budget Multiplier; 
+    Doubling both government spending and tax rates doubles GDP as well
+- Stagflation;
+    Too much inflation will always cause unemployment to stay steady as more inflation       is introduced
+- Crowding Out Effect;
+    If the gov. finances its deficits(invests in private market) investment spending         decreases, which slow down aggregate expenditures(GDP + unplanned investments)
+- Multiplier Effect:
+    Changes in aggregate expenditures can increase GDP since the money entering the          market is used over many times
 ## Credits
 
 Norman Kontarovich
