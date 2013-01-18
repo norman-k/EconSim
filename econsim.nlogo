@@ -1,7 +1,7 @@
 breed [persons person]
 breed [corporations corporation]
 breed [bank banks]
-turtles-own [capital funding workers wage price state inflation gov_spending bank_rate firm_spent person_spent]
+turtles-own [capital funding workers wage price state inflation bank_rate firm_spent person_spent]
 globals[fed]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
@@ -61,11 +61,11 @@ to go
 end
 to stimulus
   ask turtles[
-    if timer < 7[set capital capital + 5
+    if timer < 7[set capital capital + (set_stimulus)
                  set price price + 1
                  set entitlement_spending entitlement_spending + 10
     ]
-    if timer >= 7[set capital capital - 4
+    if timer >= 7[set capital capital - (set_stimulus / 2.5)
                   set price price - 2
                   set entitlement_spending entitlement_spending - 10
     ]
@@ -73,6 +73,8 @@ to stimulus
   ;add: increases the inflation rate to 5%, and increases capital, along with workers. But lowers wage and after 7 seconds inflation and worker increase stops and GDP goes down.
 end
 to gold
+  if timer <= 4[set inflation inflation_rate + 0.25 set price price + 0.25]
+  
   ;reduces inflation rate/increase in percentage of capital to 0.25% from 2%
 end
 to austerity
@@ -115,7 +117,7 @@ to set_wage
   ifelse random(50) > 40
      [set capital 30]
      [ifelse random(50) > 5
-       [set capital 10]
+       [set capital mininum_wage]
        [set capital 0]
      ]
 end
@@ -143,12 +145,12 @@ to-report debt
   report q
 end
 to-report inflation_rate
-  let A 5; price
-  let B 6; CPI
-  report ((( B - A) / A) * 100)
+  let A price; price
+  let B price + 2; CPI
+  report ((( B - A) / (A + 1.01)) * 100)
 end
 to-report CPI ;Consumer_Price_Index
-  report 500; not correct value
+  report price + 2; not correct value
 end
 to-report aggregate_capital
   report ((capital * count persons) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
@@ -160,7 +162,7 @@ end
 to-report M
   report (100 * 50)
 end  
-to-report G
+to-report Government_spending
     report entitlement_spending 
 end
 to-report L ; labor effort
@@ -182,7 +184,7 @@ to-report beta
   report 0.1
 end
 ;to-report intertemporal_utility_function BEEP KRUGMAN
-;report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (G) - (kappa * ((l) ^ 2))))))
+;report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (government_spending) - (kappa * ((l) ^ 2))))))
 ;end
 to-report total_borrowing
   report capital
@@ -201,24 +203,24 @@ end
 ;  report h
 ;end
 to-report change_in_savings
-  reset-timer
   let h (total_saving * ((count persons) + 1))
   if timer <= 4[
      report h]
   
   if timer > 5[let z ((total_saving * ((count persons) + 1)) - h)
     report z]
-  if timer > 10[reset-timer]
+  let z (total_saving * ((((count persons) + 1)) - h))
+    report z
 end
 to-report change_in_income
-  reset-timer
   let h (aggregate_capital * ((count persons) + 1))
-  if timer <= 4[
+  if timer <= 5[
      report h]
   
   if timer > 5[let z ((aggregate_capital * ((count persons) + 1)) - h)
     report z]
-  if timer > 10[reset-timer]
+  let z (total_saving * (((aggregate_capital * ((count persons) + 1)) - h)))
+    report z
 end
 to-report MPS; slope of savings schedule
   report change_in_savings / (change_in_income + .000000001)
@@ -239,7 +241,7 @@ end
 to-report I
   report aggregate_firm_spent + aggregate_person_spent + invest_per_person
 end
-to-report Gv
+to-report G
   report entitlement_spending
 end 
 to set_funding
@@ -355,7 +357,7 @@ BUTTON
 1006
 281
 Hard Currency
-gold
+ask turtles[gold]
 NIL
 1
 T
@@ -402,7 +404,7 @@ false
 "" ""
 PENS
 "interest_rates" 1.0 0 -16777216 true "plot fed_interest_rates" "plot fed_interest_rates"
-"GDP" 1.0 0 -7500403 true "ask turtles[plot C + Gv + I]" "ask turtles[plot C + Gv + I]"
+"GDP" 1.0 0 -7500403 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
 
 SLIDER
 16
@@ -413,7 +415,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-18
+0
 1
 1
 NIL
@@ -668,7 +670,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-40
+100
 1
 1
 NIL
@@ -683,7 +685,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-13
+45
 1
 1
 NIL
@@ -698,27 +700,27 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-17
+21
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-352
-590
-502
-650
+349
+564
+499
+624
 lb = lower bracket\nmb = middle bracket\nhb = high bracket\n
 16
 0.0
 1
 
 SLIDER
-85
-690
-280
-723
+88
+629
+283
+662
 lb_threshold
 lb_threshold
 0
@@ -730,25 +732,25 @@ NIL
 HORIZONTAL
 
 SLIDER
-318
-690
-525
-723
+314
+629
+521
+662
 mb_threshold
 mb_threshold
 0
 100
-12
+8
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-566
-690
-770
-723
+564
+629
+768
+662
 hb_threshold
 hb_threshold
 0
@@ -788,7 +790,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-31612
+81364
 1
 1
 NIL
@@ -852,7 +854,22 @@ set_stimulus
 set_stimulus
 0
 100000
-27
+34000
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+17
+579
+203
+612
+mininum_wage
+mininum_wage
+0
+100
+50
 1
 1
 NIL
@@ -1214,7 +1231,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.2
+NetLogo 5.0.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
