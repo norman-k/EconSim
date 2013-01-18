@@ -860,7 +860,7 @@ Interesting phenomena to observe:
     Changes in aggregate expenditures can increase GDP since the money entering the          market is used over many times
 ## Credits
 
-Norman Kontarovich
+Norman 
 @#$#@#$#@
 default
 true
