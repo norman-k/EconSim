@@ -172,21 +172,33 @@ to-report total_borrowing
   report capital
 end
 to-report total_saving
-  report capital
+  report capital / 50
 end
 to-report total_income
   report aggregate_capital
 end
-to-report MPC ;marginal propensity to consume
-   report change_in_consumption / change_in_income
-end
-to-report change_in_consumption
-  let h ((aggregate_capital) / (5 * 50))
-  report h
-end
+;to-report MPC ;marginal propensity to consume
+;   report change_in_consumption / change_in_income
+;end
+;to-report change_in_consumption
+;  let h ((aggregate_capital) / (5 * 50))
+;  report h
+;end
 to-report change_in_income
-  let h (100 * 50)
-  report h
+  reset-timer
+  if timer <= 4[
+     let h (aggregate_capital * (count person))
+     report h]
+  
+  if timer > 5[let z ((aggregate_capital * (count person)) - h)
+    report z]
+  if timer > 10[reset-timer]
+end
+to-report MPS; slope of savings schedule
+  report change_in_savings / change_in_income 
+end
+to-report MPC; slope of consumption schedule
+  report (1 - MPS)
 end
 
 @#$#@#$#@
