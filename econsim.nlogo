@@ -1,5 +1,5 @@
-breed [person persons]
-breed [corporation corporations]
+breed [persons person]
+breed [corporations corporation]
 breed [bank banks]
 turtles-own [capital funding workers wage price state inflation gov_spending bank_rate firm_spent person_spent]
 globals[fed]
@@ -10,14 +10,16 @@ end
 to setup
   ca
   set fed [1]
-  create-person 50 
+  reset-timer
+  create-persons 50 
          [set shape "person"
           set capital 100
           set_wage
          ]
-  create-corporation 10
+  create-corporations 10
          [set shape "corporation"
           set funding 100
+          ;set_funding
           set workers 4
           set size 5
           setxy random-xcor random-ycor
@@ -25,7 +27,7 @@ to setup
          ]
    create-bank 2
          [set shape "bank"
-          set funding ((capital * ((count person) / 2)) / 10)
+          set funding ((capital * ((count persons) / 2)) / 10)
           set size 5
           setxy random-xcor random-ycor
           set bank_rate 2
@@ -54,11 +56,11 @@ to wiggle
   lt 15
 end
 to go
-  ask person[wiggle]
+  ask persons[wiggle]
   ask turtles[setup-plots]
 end
 to stimulus
-  ask turtles[reset-timer
+  ask turtles[
     if timer < 7[set capital capital + 5
                  set price price + 1
                  set entitlement_spending entitlement_spending + 10
@@ -74,6 +76,16 @@ to gold
   ;reduces inflation rate/increase in percentage of capital to 0.25% from 2%
 end
 to austerity
+   ask turtles[
+    if timer < 7[set capital capital - 5
+                 set price price - 1
+                 set entitlement_spending entitlement_spending - 10
+    ]
+    if timer >= 7[set capital capital + 6
+                  set price price + 2
+                  set entitlement_spending entitlement_spending + 4
+    ]
+  ]
   ;lowers government spending and raises tax rates
 end
 to nit
@@ -86,10 +98,18 @@ to regulate
   ;hightens corporate tax 2% every year for 10 years sets limit to 1 company and has a mininum wage of $10
 end
 to recapitalize
-  ;if funding lower than some amount have a random corporation with more funding buy that company 
+ ; ask corporations[if funding <= 1000[set state "bankrupt"]
+ ;   if state = "bankrupt"[
+ ;     wait 2
+ ;     die 
+ ;   ask corporation 0[
+ ;     set funding funding + 1000
+ ;  ]
+ ; ]
+ ; ]
 end
 to-report unemployment_rate
-     report ((count person with[ wage = 0]) / (count turtles) * 100)
+     report ((count persons with[ wage = 0]) / (count turtles) * 100)
 end
 to set_wage
   ifelse random(50) > 40
@@ -100,16 +120,16 @@ to set_wage
      ]
 end
 to-report number_lb_people
-  report count person with[ wage < lb_threshold]
+  report count persons with[ wage < lb_threshold]
 end
 to-report number_mb_people
-  report count person with[ wage > mb_threshold and wage < hb_threshold]
+  report count persons with[ wage > mb_threshold and wage < hb_threshold]
 end
 to-report number_hb_people
-  report count person with[ wage > hb_threshold]
+  report count persons with[ wage > hb_threshold]
 end
 to-report tax_revenue
-  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporation)
+  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporations)
 end
 to-report deficit
   let q 0
@@ -131,11 +151,11 @@ to-report CPI ;Consumer_Price_Index
   report 500; not correct value
 end
 to-report aggregate_capital
-  report ((capital * count person) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
+  report ((capital * count persons) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
 end     
 
 to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous spending if income levels were zero c1 is the marginal propensity to consume
-  report ((total_saving - total_borrowing) * count person) + (MPC * aggregate_capital)
+  report ((total_saving - total_borrowing) * count persons) + (MPC * aggregate_capital)
 end
 to-report M
   report (100 * 50)
@@ -161,7 +181,7 @@ end
 to-report beta
   report 0.1
 end
-;to-report intertemporal_utility_function
+;to-report intertemporal_utility_function BEEP KRUGMAN
 ;report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (G) - (kappa * ((l) ^ 2))))))
 ;end
 to-report total_borrowing
@@ -182,21 +202,21 @@ end
 ;end
 to-report change_in_savings
   reset-timer
-  let h (total_saving * ((count person) + 1))
+  let h (total_saving * ((count persons) + 1))
   if timer <= 4[
      report h]
   
-  if timer > 5[let z ((total_saving * ((count person) + 1)) - h)
+  if timer > 5[let z ((total_saving * ((count persons) + 1)) - h)
     report z]
   if timer > 10[reset-timer]
 end
 to-report change_in_income
   reset-timer
-  let h (aggregate_capital * ((count person) + 1))
+  let h (aggregate_capital * ((count persons) + 1))
   if timer <= 4[
      report h]
   
-  if timer > 5[let z ((aggregate_capital * ((count person) + 1)) - h)
+  if timer > 5[let z ((aggregate_capital * ((count persons) + 1)) - h)
     report z]
   if timer > 10[reset-timer]
 end
@@ -208,10 +228,10 @@ to-report MPC; slope of consumption schedule
 end
 ;to-report GDP
 to-report aggregate_firm_spent
-  report ((capital * count corporation) + 1) / 40
+  report ((capital * count corporations) + 1) / 40
 end
 to-report aggregate_person_spent
-  report ((capital * count person) + 1) / 40
+  report ((capital * count persons) + 1) / 40
 end
 to-report invest_per_person
   report random(capital)
@@ -222,6 +242,14 @@ end
 to-report Gv
   report entitlement_spending
 end 
+to set_funding
+   ifelse random(50) > 40
+     [set funding 100000]
+     [ifelse random(50) > 5
+       [set capital 50000]
+       [set capital 10000]
+     ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -257,7 +285,7 @@ BUTTON
 279
 Nationalize the Banks!
 stimulus
-T
+NIL
 1
 T
 OBSERVER
@@ -385,7 +413,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-0
+18
 1
 1
 NIL
@@ -565,7 +593,7 @@ fed_interest_rates
 fed_interest_rates
 0
 15
-0
+15
 0.1
 1
 NIL
@@ -614,7 +642,7 @@ capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-0
+4.5
 0.5
 1
 NIL
@@ -640,7 +668,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-22
+40
 1
 1
 NIL
@@ -655,7 +683,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-0
+13
 1
 1
 NIL
@@ -670,7 +698,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-0
+17
 1
 1
 NIL
@@ -760,7 +788,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-15909
+31612
 1
 1
 NIL
@@ -792,7 +820,7 @@ true
 false
 "" ""
 PENS
-"aggregate_pop" 1.0 0 -16777216 true "ask person[plot count turtles]" "ask person[plot count turtles]"
+"aggregate_pop" 1.0 0 -16777216 true "ask persons[plot count turtles]" "ask persons[plot count turtles]"
 "aggregate_wealth" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital]" "ask turtles[plot aggregate_capital]"
 
 TEXTBOX
@@ -824,7 +852,7 @@ set_stimulus
 set_stimulus
 0
 100000
-0
+27
 1
 1
 NIL
@@ -1186,7 +1214,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.3
+NetLogo 5.0.2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
