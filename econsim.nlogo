@@ -101,8 +101,6 @@ end
 to stimulus
   ask turtles[
     set capital capital + (set_stimulus)
-                 set price price + 1
-                 set entitlement_spending entitlement_spending + 10
 ;    ]
 ;    every 3[set capital capital - (set_stimulus / 2.5)
 ;                  set price price - 2
