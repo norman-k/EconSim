@@ -300,7 +300,7 @@ to-report money_multiplier
   report (1 / required_reserve_ratio)
 end
 to-report M1
-  ask turtles[report aggregate_capital + capital_gains]
+  ask turtles[report (aggregate_capital + capital_gains)]
 end
 to-report M2
   ask turtles[report M1 + dividends]
@@ -337,10 +337,10 @@ ticks
 30.0
 
 BUTTON
-685
-246
-839
-279
+673
+188
+827
+221
 Nationalize the Banks!
 stimulus
 T
@@ -388,10 +388,10 @@ NIL
 1
 
 TEXTBOX
-684
-204
-833
-253
+671
+83
+820
+132
 Keynesian:\nRemember, in the long run we're all dead!
 11
 0.0
@@ -444,10 +444,10 @@ PENS
 "inflation_rate" 1.0 0 -7500403 true "ask turtles[plot inflation_rate]" "ask turtles[plot inflation_rate]"
 
 PLOT
-1119
-14
-1319
-164
+1262
+512
+1462
+662
 IS/LM
 GDP
 Interest Rates
@@ -471,7 +471,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-42
+2
 1
 1
 NIL
@@ -488,10 +488,10 @@ Austrians\nDon't pay attention to the graphs above! They're just black magic.
 1
 
 TEXTBOX
-685
-363
-835
-419
+687
+359
+837
+415
 Reaganomist\nYour public appeal automatically boosts supply and lowers tax rates 10%\n
 11
 0.0
@@ -517,10 +517,10 @@ PENS
 "tax_rate" 1.0 0 -7500403 true "plot 100" "plot 100"
 
 BUTTON
-686
-290
-822
-325
+672
+242
+827
+277
 Austerity
 austerity
 T
@@ -607,9 +607,9 @@ debt
 11
 
 PLOT
-664
+914
 13
-864
+1114
 163
 Price
 NIL
@@ -625,10 +625,10 @@ PENS
 "demand" 1.0 0 -16777216 true "ask turtles[plot demand]" "ask turtles[plot demand]"
 
 PLOT
-885
-14
-1085
-164
+1134
+13
+1334
+163
 Quantity
 NIL
 NIL
@@ -700,7 +700,7 @@ capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-18.5
+19.5
 0.5
 1
 NIL
@@ -796,7 +796,7 @@ mb_threshold
 mb_threshold
 0
 100
-93
+100
 1
 1
 NIL
@@ -811,7 +811,7 @@ hb_threshold
 hb_threshold
 0
 100
-35
+71
 1
 1
 NIL
@@ -838,15 +838,15 @@ GDP = private consumption + gross investment + government spending + (exports âˆ
 1
 
 SLIDER
-210
-482
-445
-515
+215
+480
+450
+513
 entitlement_spending
 entitlement_spending
 0
 100000
-1
+0
 1
 1
 NIL
@@ -902,10 +902,10 @@ Money Gov. spends on social services
 1
 
 SLIDER
-677
-168
-842
-201
+663
+130
+828
+163
 set_stimulus
 set_stimulus
 0
@@ -969,7 +969,7 @@ required_reserve_ratio
 required_reserve_ratio
 0
 100
-50
+51
 1
 1
 NIL
@@ -987,10 +987,10 @@ money_multiplier
 16
 
 SLIDER
-652
-326
-824
-359
+663
+292
+832
+325
 %_gov_cuts
 %_gov_cuts
 0
@@ -1010,7 +1010,7 @@ buy_government_bonds
 buy_government_bonds
 0
 10000
-2
+18
 1
 1
 NIL
@@ -1049,6 +1049,24 @@ M3
 1
 16
 
+PLOT
+1040
+511
+1240
+661
+AD-AS Model
+AD
+AS
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles"
+
 @#$#@#$#@
 ## Instructions
 
@@ -1077,6 +1095,8 @@ Interesting phenomena to observe:
     If the gov. finances its deficits(invests in private market) investment spending         decreases, which slow down aggregate expenditures(GDP + unplanned investments)
 - Multiplier Effect:
     Changes in aggregate expenditures can increase GDP since the money entering the          market is used over many times
+- Monetarist Equation of Exchange
+    MV = PQ where V is a constant for the average amount of times a year money is           spent, M is supply of money and where P is the price and q is quantity. So 2 apples     for $5 represents only $10 in the supply of money that is being exchanged. While        there will be times where investments are kept in cold hands than at the bank, it       generally holds true in this simulation. 
 ##LearnMore
 Frictional Unemployment - unemployment that happens because one job is too far from another
 Cyclical Unemployment - unemployment that results from disruptions in the economy(such as a recession or depression)
