@@ -308,6 +308,14 @@ end
 to-report M3
   ask turtles[report M2 + capital] ; fix to reflect large deposits
 end
+to-report aggregate_supply; Y = Y* + α·(P-Pe)
+  let y (C + G + I)
+    let a 1
+    let P price
+    let Pj equilibrium_price
+    report (y + a * (P - Pj))
+  
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -846,7 +854,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-0
+58182
 1
 1
 NIL
@@ -995,7 +1003,7 @@ SLIDER
 %_gov_cuts
 0
 100
-20
+38
 1
 1
 NIL
@@ -1010,7 +1018,7 @@ buy_government_bonds
 buy_government_bonds
 0
 10000
-18
+31
 1
 1
 NIL
@@ -1065,7 +1073,8 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles"
+"AD" 1.0 0 -16777216 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
+"AS" 1.0 0 -7500403 true "ask turtles[plot aggregate_supply]" "ask turtles[plot aggregate_supply]"
 
 @#$#@#$#@
 ## Instructions
