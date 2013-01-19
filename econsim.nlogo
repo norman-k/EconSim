@@ -914,11 +914,11 @@ NIL
 HORIZONTAL
 
 PLOT
-896
-582
-1096
-732
-Production Possibilities Frontier
+826
+511
+1026
+661
+Market Equilibrium
 NIL
 NIL
 0.0
