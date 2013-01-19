@@ -1,8 +1,9 @@
 breed [persons person]
 breed [corporations corporation]
-breed [bank banks]
+breed [banks bank]
+breed [national_banks national_bank]
 turtles-own [capital funding workers wage price supply state inflation bank_rate firm_spent person_spent dividents bank_employers capital_gains dividends]
-globals[fed]
+globals[fed bond]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
 end
@@ -26,7 +27,7 @@ to setup
           set price 5.00
           set supply 1000 * (count corporations)
          ]
-   create-bank 2
+   create-banks 2
          [set shape "bank"
           set funding ((capital * ((count persons) / 2)) / 10)
           set size 5
@@ -34,6 +35,9 @@ to setup
           set bank_rate 2
           set capital_gains capital / 10
           set dividends funding / (capital_gains + 0.01)
+         ]
+    create-national_banks 1
+         [set bond equilibrium_price * 50 * buy_government_bonds; change this to the actual formula utilized
          ]
    ask turtles[setup-plots]
 
@@ -737,7 +741,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-87
+100
 1
 1
 NIL
@@ -1006,7 +1010,7 @@ buy_government_bonds
 buy_government_bonds
 0
 10000
-0
+2
 1
 1
 NIL
