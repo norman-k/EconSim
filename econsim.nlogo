@@ -1,7 +1,7 @@
 breed [persons person]
 breed [corporations corporation]
 breed [bank banks]
-turtles-own [capital funding workers wage price state inflation bank_rate firm_spent person_spent]
+turtles-own [capital funding workers wage price supply state inflation bank_rate firm_spent person_spent dividents bank_employers capital_gains dividends]
 globals[fed]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
@@ -13,8 +13,8 @@ to setup
   reset-timer
   create-persons 50 
          [set shape "person"
-          set capital 100
           set_wage
+          set capital wage
          ]
   create-corporations 10
          [set shape "corporation"
@@ -24,6 +24,7 @@ to setup
           set size 5
           setxy random-xcor random-ycor
           set price 5.00
+          set supply 1000 * (count corporations)
          ]
    create-bank 2
          [set shape "bank"
@@ -31,10 +32,23 @@ to setup
           set size 5
           setxy random-xcor random-ycor
           set bank_rate 2
+          set capital_gains capital / 10
+          set dividends funding / (capital_gains + 0.01)
          ]
    ask turtles[setup-plots]
 
    
+end
+to go
+  ask persons[wiggle]
+  ask turtles[setup-plots
+  if price < equilibrium_price[
+  set price price + 1
+  ]
+  if supply < equilibrium_quantity[
+    set supply supply + 1
+  ]
+  ]
 end
 to free_bank
   set corporate_tax_rates 0 
@@ -42,10 +56,33 @@ end
 to abolish_fed
   set fed []
 end
-
-to-report supply
-  report 1
-  ;report (sum [wage] of turtles) * workers
+to-report equilibrium_price; ((a - c) / (b + d))
+  let a price + (capital / 100)
+  let b 1.75 ; elastic
+  let f price - (capital / 100)
+  let d 1.75 ; elastic
+  let p ((a - f) / (b + d))
+  report p
+end
+to-report equilibrium_quantity; (ad + bf/(b + d))
+  let a price + (capital / 100)
+  let b 1.75 ; elastic
+  let f price - (capital / 100)
+  let d 1.75 ; elastic
+  let p ((a * d + b * f)/(b + d))
+  report p
+end
+to-report demand_curve; P = a - bQd a is the highest price anyone would way(reservation pay; remember paying anything less is a consumer surplus for the buyer which is (reservation price - market price)) and b is the slope (P = 0)
+  let a price + (capital / 100)
+  let b 1.75 ; elastic
+  let d a / b
+  report d
+end
+to-report supply_curve; P = a - bQs a is the lowest price anyone would sell and b is the slope (p = 0)
+  let a price - (capital / 100)
+  let b 1.75 ; elastic
+  let d a / b
+  report d
 end
 to-report demand
   report price
@@ -54,10 +91,6 @@ to wiggle
   fd 5
   rt 15
   lt 15
-end
-to go
-  ask persons[wiggle]
-  ask turtles[setup-plots]
 end
 to stimulus
   ask turtles[
@@ -131,7 +164,7 @@ to-report number_hb_people
   report count persons with[ wage > hb_threshold]
 end
 to-report tax_revenue
-  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporations)
+  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporations) + (capital_gains_tax_rates * count persons)
 end
 to-report deficit
   let q 0
@@ -153,7 +186,7 @@ to-report CPI ;Consumer_Price_Index
   report price + 2; not correct value
 end
 to-report aggregate_capital
-  report ((capital * count persons) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
+  report ((capital * count persons) - ((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (capital_gains_tax_rates * count persons)))
 end     
 
 to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous spending if income levels were zero c1 is the marginal propensity to consume
@@ -174,9 +207,9 @@ end
 to-report chi
   report 1
 end
-to-report p
-  report 1
-end
+;to-report p
+;  report 1
+;end
 to-report v
   report 1
 end
@@ -415,7 +448,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-0
+42
 1
 1
 NIL
@@ -584,7 +617,7 @@ true
 false
 "" ""
 PENS
-"Supply" 1.0 0 -16777216 true "plot supply" "plot supply"
+"Supply" 1.0 0 -16777216 true "ask turtles[plot supply]" "ask turtles[plot supply]"
 
 SLIDER
 15
@@ -644,7 +677,7 @@ capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-4.5
+18.5
 0.5
 1
 NIL
@@ -670,7 +703,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-38
+93
 1
 1
 NIL
@@ -685,7 +718,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-45
+86
 1
 1
 NIL
@@ -700,7 +733,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-41
+7
 1
 1
 NIL
@@ -725,7 +758,7 @@ lb_threshold
 lb_threshold
 0
 100
-1
+8
 1
 1
 NIL
@@ -740,7 +773,7 @@ mb_threshold
 mb_threshold
 0
 100
-8
+91
 1
 1
 NIL
@@ -755,7 +788,7 @@ hb_threshold
 hb_threshold
 0
 100
-25
+35
 1
 1
 NIL
@@ -790,7 +823,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-29545
+16776
 1
 1
 NIL
@@ -869,11 +902,30 @@ mininum_wage
 mininum_wage
 0
 100
-50
+56
 1
 1
 NIL
 HORIZONTAL
+
+PLOT
+896
+582
+1096
+732
+supply demand
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "ask turtles[plot equilibrium_price]" "ask turtles[plot equilibrium_price]"
+"pen-1" 1.0 0 -7500403 true "ask turtles[plot equilibrium_quantity]" "ask turtles[plot equilibrium_quantity]"
 
 @#$#@#$#@
 ## Instructions
