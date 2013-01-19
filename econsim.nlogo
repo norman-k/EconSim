@@ -45,7 +45,13 @@ to go
   if price < equilibrium_price[
   set price price + 1
   ]
+  if price > equilibrium_price[
+  set price price - 1
+  ]
   if supply < equilibrium_quantity[
+    set supply supply + 1
+  ]
+  if supply > equilibrium_quantity[
     set supply supply + 1
   ]
   ]
@@ -94,14 +100,15 @@ to wiggle
 end
 to stimulus
   ask turtles[
-    if timer < 7[set capital capital + (set_stimulus)
+    set capital capital + (set_stimulus)
                  set price price + 1
                  set entitlement_spending entitlement_spending + 10
-    ]
-    if timer >= 7[set capital capital - (set_stimulus / 2.5)
-                  set price price - 2
-                  set entitlement_spending entitlement_spending - 10
-    ]
+;    ]
+;    every 3[set capital capital - (set_stimulus / 2.5)
+;                  set price price - 2
+;                  set entitlement_spending entitlement_spending - 10
+;    ]
+;  ]
   ]
   ;add: increases the inflation rate to 5%, and increases capital, along with workers. But lowers wage and after 7 seconds inflation and worker increase stops and GDP goes down.
 end
@@ -320,7 +327,7 @@ BUTTON
 279
 Nationalize the Banks!
 stimulus
-NIL
+T
 1
 T
 OBSERVER
@@ -703,7 +710,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-93
+27
 1
 1
 NIL
@@ -823,7 +830,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-16776
+42196
 1
 1
 NIL
@@ -887,7 +894,7 @@ set_stimulus
 set_stimulus
 0
 100000
-34000
+9333
 1
 1
 NIL
@@ -913,7 +920,7 @@ PLOT
 582
 1096
 732
-supply demand
+Production Possibilities Frontier
 NIL
 NIL
 0.0
