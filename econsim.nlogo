@@ -449,7 +449,7 @@ false
 "" ""
 PENS
 "unemployment_rate" 1.0 0 -16777216 true "ask turtles[plot unemployment_rate]" "plot unemployment_rate"
-"inflation_rate" 1.0 0 -7500403 true "ask turtles[plot inflation_rate]" "ask turtles[plot inflation_rate]"
+"inflation_rate" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot inflation_rate]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot inflation_rate]"
 
 PLOT
 1262
@@ -468,7 +468,7 @@ false
 "" ""
 PENS
 "GDP" 1.0 0 -16777216 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
-"interest_rates" 1.0 0 -7500403 true "plot 15" "plot 15"
+"interest_rates" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot 15" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot 15"
 
 SLIDER
 16
@@ -522,7 +522,7 @@ false
 "" ""
 PENS
 "tax_revenue" 1.0 0 -16777216 true "plot tax_revenue" "plot tax_revenue"
-"tax_rate" 1.0 0 -7500403 true "plot 100" "plot 100"
+"tax_rate" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot lb_income_tax_rates" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot lb_income_tax_rates"
 
 BUTTON
 672
@@ -734,7 +734,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-72
+100
 1
 1
 NIL
@@ -887,7 +887,7 @@ false
 "" ""
 PENS
 "aggregate_pop" 1.0 0 -16777216 true "ask persons[plot count turtles]" "ask persons[plot count turtles]"
-"aggregate_wealth" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital]" "ask turtles[plot aggregate_capital]"
+"aggregate_wealth" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_capital]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_capital]"
 
 TEXTBOX
 1343
@@ -956,7 +956,7 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "ask turtles[plot equilibrium_quantity]" "ask turtles[plot equilibrium_quantity]"
-"pen-1" 1.0 0 -7500403 true "ask turtles[plot equilibrium_price]" "ask turtles[plot equilibrium_price]"
+"pen-1" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot equilibrium_price]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot equilibrium_price]"
 
 TEXTBOX
 368
@@ -1071,10 +1071,10 @@ AS
 10.0
 true
 false
-"" ""
+"ask turtles[plotxy (C + G + I) aggregate_supply]" "ask turtles[plotxy (C + G + I) aggregate_supply]"
 PENS
-"AD" 1.0 0 -16777216 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
-"AS" 1.0 0 -7500403 true "ask turtles[plot aggregate_supply]" "ask turtles[plot aggregate_supply]"
+"AD" 1.0 0 -7500403 true "ask turtles[plotxy (C + G + I) aggregate_supply]" "ask turtles[plot (C + G + I)]"
+"AS" 1.0 0 -2674135 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_supply]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_supply]"
 
 @#$#@#$#@
 ## Instructions
