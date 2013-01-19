@@ -1,15 +1,9 @@
-<<<<<<< HEAD:econsim.nlogo
-breed [person persons]
-breed [corporation corporations]
-breed [bank banks]
-turtles-own [capital funding workers wage price state inflation gov_spending bank_rate firm_spent person_spent]
-=======
 breed [persons person]
 breed [corporations corporation]
-breed [bank banks]
-turtles-own [capital funding workers wage price state inflation bank_rate firm_spent person_spent]
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
-globals[fed]
+breed [banks bank]
+breed [national_banks national_bank]
+turtles-own [capital funding workers wage price supply state inflation bank_rate firm_spent person_spent dividents bank_employers capital_gains dividends]
+globals[fed bond]
 
 to startup ;special procedure in netlogo that runs whatever code you put here automatically when the .nlogo file is opened
 end
@@ -17,15 +11,11 @@ end
 to setup
   ca
   set fed [1]
-<<<<<<< HEAD:econsim.nlogo
-  create-person 50 
-=======
   reset-timer
   create-persons 50 
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
          [set shape "person"
-          set capital 100
           set_wage
+          set capital wage
          ]
   create-corporations 10
          [set shape "corporation"
@@ -35,21 +25,40 @@ to setup
           set size 5
           setxy random-xcor random-ycor
           set price 5.00
+          set supply 1000 * (count corporations)
          ]
-   create-bank 2
+   create-banks 2
          [set shape "bank"
-<<<<<<< HEAD:econsim.nlogo
-          set funding ((capital * ((count person) / 2)) / 10)
-=======
           set funding ((capital * ((count persons) / 2)) / 10)
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
           set size 5
           setxy random-xcor random-ycor
           set bank_rate 2
+          set capital_gains capital / 10
+          set dividends funding / (capital_gains + 0.01)
+         ]
+    create-national_banks 1
+         [set bond equilibrium_price * 50 * buy_government_bonds; change this to the actual formula utilized
          ]
    ask turtles[setup-plots]
 
    
+end
+to go
+  ask persons[wiggle]
+  ask turtles[setup-plots
+  if price < equilibrium_price[
+  set price price + 1
+  ]
+  if price > equilibrium_price[
+  set price price - 1
+  ]
+  if supply < equilibrium_quantity[
+    set supply supply + 1
+  ]
+  if supply > equilibrium_quantity[
+    set supply supply + 1
+  ]
+  ]
 end
 to free_bank
   set corporate_tax_rates 0 
@@ -57,10 +66,33 @@ end
 to abolish_fed
   set fed []
 end
-
-to-report supply
-  report 1
-  ;report (sum [wage] of turtles) * workers
+to-report equilibrium_price; ((a - c) / (b + d))
+  let a price + (capital / 100)
+  let b 1.75 ; elastic
+  let f price - (capital / 100)
+  let d 1.75 ; elastic
+  let p ((a - f) / (b + d))
+  report p
+end
+to-report equilibrium_quantity; (ad + bf/(b + d))
+  let a price + (capital / 100)
+  let b 1.75 ; elastic
+  let f price - (capital / 100)
+  let d 1.75 ; elastic
+  let p ((a * d + b * f)/(b + d))
+  report p
+end
+to-report demand_curve; P = a - bQd a is the highest price anyone would way(reservation pay; remember paying anything less is a consumer surplus for the buyer which is (reservation price - market price)) and b is the slope (P = 0)
+  let a price + (capital / 100)
+  let b 1.75 ; elastic
+  let d a / b
+  report d
+end
+to-report supply_curve; P = a - bQs a is the lowest price anyone would sell and b is the slope (p = 0)
+  let a price - (capital / 100)
+  let b 1.75 ; elastic
+  let d a / b
+  report d
 end
 to-report demand
   report price
@@ -70,29 +102,15 @@ to wiggle
   rt 15
   lt 15
 end
-to go
-  ask persons[wiggle]
-  ask turtles[setup-plots]
-end
 to stimulus
-<<<<<<< HEAD:econsim.nlogo
-  ask turtles[reset-timer
-    if timer < 7[set capital capital + 5
-                 set price price + 1
-                 set entitlement_spending entitlement_spending + 10
-    ]
-    if timer >= 7[set capital capital - 4
-=======
   ask turtles[
-    if timer < 7[set capital capital + (set_stimulus)
-                 set price price + 1
-                 set entitlement_spending entitlement_spending + 10
-    ]
-    if timer >= 7[set capital capital - (set_stimulus / 2.5)
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
-                  set price price - 2
-                  set entitlement_spending entitlement_spending - 10
-    ]
+    set capital capital + (set_stimulus)
+;    ]
+;    every 3[set capital capital - (set_stimulus / 2.5)
+;                  set price price - 2
+;                  set entitlement_spending entitlement_spending - 10
+;    ]
+;  ]
   ]
   ;add: increases the inflation rate to 5%, and increases capital, along with workers. But lowers wage and after 7 seconds inflation and worker increase stops and GDP goes down.
 end
@@ -102,19 +120,18 @@ to gold
   ;reduces inflation rate/increase in percentage of capital to 0.25% from 2%
 end
 to austerity
-<<<<<<< HEAD:econsim.nlogo
-=======
    ask turtles[
-    if timer < 7[set capital capital - 5
-                 set price price - 1
-                 set entitlement_spending entitlement_spending - 10
-    ]
-    if timer >= 7[set capital capital + 6
-                  set price price + 2
-                  set entitlement_spending entitlement_spending + 4
-    ]
-  ]
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+     set entitlement_spending (entitlement_spending - (100 * %_gov_cuts))
+   ] 
+;    if timer < 7[set capital capital - 5
+;                 set price price - 1
+;                 set entitlement_spending entitlement_spending - 10
+;    ]
+;    if timer >= 7[set capital capital + 6
+;                  set price price + 2
+;                  set entitlement_spending entitlement_spending + 4
+;    ]
+;  ]
   ;lowers government spending and raises tax rates
 end
 to nit
@@ -138,37 +155,17 @@ to recapitalize
  ; ]
 end
 to-report unemployment_rate
-<<<<<<< HEAD:econsim.nlogo
-     report ((count person with[ wage = 0]) / (count turtles) * 100)
-=======
      report ((count persons with[ wage = 0]) / (count turtles) * 100)
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 end
 to set_wage
   ifelse random(50) > 40
      [set capital 30]
      [ifelse random(50) > 5
-<<<<<<< HEAD:econsim.nlogo
-       [set capital 10]
-=======
        [set capital mininum_wage]
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
        [set capital 0]
      ]
 end
 to-report number_lb_people
-<<<<<<< HEAD:econsim.nlogo
-  report count person with[ wage < lb_threshold]
-end
-to-report number_mb_people
-  report count person with[ wage > mb_threshold and wage < hb_threshold]
-end
-to-report number_hb_people
-  report count person with[ wage > hb_threshold]
-end
-to-report tax_revenue
-  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporation)
-=======
   report count persons with[ wage < lb_threshold]
 end
 to-report number_mb_people
@@ -178,8 +175,7 @@ to-report number_hb_people
   report count persons with[ wage > hb_threshold]
 end
 to-report tax_revenue
-  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporations)
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+  report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporations) + (capital_gains_tax_rates * count persons)
 end
 to-report deficit
   let q 0
@@ -193,21 +189,6 @@ to-report debt
   report q
 end
 to-report inflation_rate
-<<<<<<< HEAD:econsim.nlogo
-  let A 5; price
-  let B 6; CPI
-  report ((( B - A) / A) * 100)
-end
-to-report CPI ;Consumer_Price_Index
-  report 500; not correct value
-end
-to-report aggregate_capital
-  report ((capital * count person) - (((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people))))
-end     
-
-to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous spending if income levels were zero c1 is the marginal propensity to consume
-  report ((total_saving - total_borrowing) * count person) + (MPC * aggregate_capital)
-=======
   let A price; price
   let B price + 2; CPI
   report ((( B - A) / (A + 1.01)) * 100)
@@ -216,21 +197,16 @@ to-report CPI ;Consumer_Price_Index
   report price + 2; not correct value
 end
 to-report aggregate_capital
-  report ((capital * count persons) - (((lb_income_tax_rates * number_lb_people) - (mb_income_tax_rates * number_mb_people) - (hb_income_tax_rates * number_hb_people))))
+  report ((capital * count persons) - ((lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (capital_gains_tax_rates * count persons)))
 end     
 
 to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous spending if income levels were zero c1 is the marginal propensity to consume
   report ((total_saving - total_borrowing) * count persons) + (MPC * aggregate_capital)
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 end
 to-report M
   report (100 * 50)
 end  
-<<<<<<< HEAD:econsim.nlogo
-to-report G
-=======
 to-report Government_spending
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
     report entitlement_spending 
 end
 to-report L ; labor effort
@@ -242,22 +218,17 @@ end
 to-report chi
   report 1
 end
-to-report p
-  report 1
-end
+;to-report p
+;  report 1
+;end
 to-report v
   report 1
 end
 to-report beta
   report 0.1
 end
-<<<<<<< HEAD:econsim.nlogo
-;to-report intertemporal_utility_function
-;report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (G) - (kappa * ((l) ^ 2))))))
-=======
 ;to-report intertemporal_utility_function 
 ;report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (government_spending) - (kappa * ((l) ^ 2))))))
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 ;end
 to-report total_borrowing
   report capital
@@ -276,26 +247,6 @@ end
 ;  report h
 ;end
 to-report change_in_savings
-<<<<<<< HEAD:econsim.nlogo
-  reset-timer
-  let h (total_saving * ((count person) + 1))
-  if timer <= 4[
-     report h]
-  
-  if timer > 5[let z ((total_saving * ((count person) + 1)) - h)
-    report z]
-  if timer > 10[reset-timer]
-end
-to-report change_in_income
-  reset-timer
-  let h (aggregate_capital * ((count person) + 1))
-  if timer <= 4[
-     report h]
-  
-  if timer > 5[let z ((aggregate_capital * ((count person) + 1)) - h)
-    report z]
-  if timer > 10[reset-timer]
-=======
   let h (total_saving * ((count persons) + 1))
   if timer <= 4[
      report h]
@@ -314,7 +265,6 @@ to-report change_in_income
     report z]
   let z (total_saving * (((aggregate_capital * ((count persons) + 1)) - h)))
     report z
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 end
 to-report MPS; slope of savings schedule
   report change_in_savings / (change_in_income + .000000001)
@@ -324,17 +274,10 @@ to-report MPC; slope of consumption schedule
 end
 ;to-report GDP
 to-report aggregate_firm_spent
-<<<<<<< HEAD:econsim.nlogo
-  report ((capital * count corporation) + 1) / 40
-end
-to-report aggregate_person_spent
-  report ((capital * count person) + 1) / 40
-=======
   report ((capital * count corporations) + 1) / 40
 end
 to-report aggregate_person_spent
   report ((capital * count persons) + 1) / 40
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 end
 to-report invest_per_person
   report random(capital)
@@ -342,11 +285,6 @@ end
 to-report I
   report aggregate_firm_spent + aggregate_person_spent + invest_per_person
 end
-<<<<<<< HEAD:econsim.nlogo
-to-report Gv
-  report entitlement_spending
-end 
-=======
 to-report G
   report entitlement_spending
 end 
@@ -358,7 +296,26 @@ to set_funding
        [set capital 10000]
      ]
 end
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+to-report money_multiplier
+  report (1 / required_reserve_ratio)
+end
+to-report M1
+  ask turtles[report (aggregate_capital + capital_gains)]
+end
+to-report M2
+  ask turtles[report M1 + dividends]
+end
+to-report M3
+  ask turtles[report M2 + capital] ; fix to reflect large deposits
+end
+to-report aggregate_supply; Y = Y* + α·(P-Pe)
+  let y (C + G + I)
+    let a 1
+    let P price
+    let Pj equilibrium_price
+    report (y + a * (P - Pj))
+  
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -388,10 +345,10 @@ ticks
 30.0
 
 BUTTON
-685
-246
-839
-279
+673
+188
+827
+221
 Nationalize the Banks!
 stimulus
 T
@@ -439,10 +396,10 @@ NIL
 1
 
 TEXTBOX
-684
-204
-833
-253
+671
+83
+820
+132
 Keynesian:\nRemember, in the long run we're all dead!
 11
 0.0
@@ -495,27 +452,23 @@ PENS
 "inflation_rate" 1.0 0 -7500403 true "ask turtles[plot inflation_rate]" "ask turtles[plot inflation_rate]"
 
 PLOT
-1119
-14
-1319
-164
+1262
+512
+1462
+662
 IS/LM
 GDP
 Interest Rates
 0.0
-10.0
+15.0
 0.0
-10.0
+15.0
 true
 false
 "" ""
 PENS
-"interest_rates" 1.0 0 -16777216 true "plot fed_interest_rates" "plot fed_interest_rates"
-<<<<<<< HEAD:econsim.nlogo
-"GDP" 1.0 0 -7500403 true "ask turtles[plot C + Gv + I]" "ask turtles[plot C + Gv + I]"
-=======
-"GDP" 1.0 0 -7500403 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+"GDP" 1.0 0 -16777216 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
+"interest_rates" 1.0 0 -7500403 true "plot 15" "plot 15"
 
 SLIDER
 16
@@ -543,10 +496,10 @@ Austrians\nDon't pay attention to the graphs above! They're just black magic.
 1
 
 TEXTBOX
-689
-346
-839
-402
+687
+359
+837
+415
 Reaganomist\nYour public appeal automatically boosts supply and lowers tax rates 10%\n
 11
 0.0
@@ -572,13 +525,13 @@ PENS
 "tax_rate" 1.0 0 -7500403 true "plot 100" "plot 100"
 
 BUTTON
-686
-290
-822
-325
+672
+242
+827
+277
 Austerity
 austerity
-NIL
+T
 1
 T
 OBSERVER
@@ -606,10 +559,10 @@ NIL
 1
 
 BUTTON
-686
-408
-779
-441
+684
+426
+780
+459
 NIL
 Deregulate
 NIL
@@ -662,9 +615,9 @@ debt
 11
 
 PLOT
-664
+914
 13
-864
+1114
 163
 Price
 NIL
@@ -680,10 +633,10 @@ PENS
 "demand" 1.0 0 -16777216 true "ask turtles[plot demand]" "ask turtles[plot demand]"
 
 PLOT
-885
-14
-1085
-164
+1134
+13
+1334
+163
 Quantity
 NIL
 NIL
@@ -695,22 +648,18 @@ true
 false
 "" ""
 PENS
-"Supply" 1.0 0 -16777216 true "plot supply" "plot supply"
+"Supply" 1.0 0 -16777216 true "ask turtles[plot supply]" "ask turtles[plot supply]"
 
 SLIDER
-15
-53
-187
-86
+750
+724
+922
+757
 fed_interest_rates
 fed_interest_rates
 0
 15
-<<<<<<< HEAD:econsim.nlogo
-0
-=======
 15
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 0.1
 1
 NIL
@@ -734,10 +683,10 @@ NIL
 1
 
 BUTTON
-686
-450
-782
-483
+685
+465
+781
+498
 Abolish FED
 abolish_fed
 NIL
@@ -759,11 +708,7 @@ capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-<<<<<<< HEAD:econsim.nlogo
-0
-=======
-4.5
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+19.5
 0.5
 1
 NIL
@@ -789,11 +734,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-<<<<<<< HEAD:econsim.nlogo
-22
-=======
-38
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+72
 1
 1
 NIL
@@ -808,11 +749,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-<<<<<<< HEAD:econsim.nlogo
 0
-=======
-45
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 1
 1
 NIL
@@ -827,45 +764,27 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-<<<<<<< HEAD:econsim.nlogo
-0
-=======
-41
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+11
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-<<<<<<< HEAD:econsim.nlogo
-352
-590
-502
-650
-=======
 349
 564
 499
 624
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 lb = lower bracket\nmb = middle bracket\nhb = high bracket\n
 16
 0.0
 1
 
 SLIDER
-<<<<<<< HEAD:econsim.nlogo
-85
-690
-280
-723
-=======
 88
 629
 283
 662
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 lb_threshold
 lb_threshold
 0
@@ -877,48 +796,30 @@ NIL
 HORIZONTAL
 
 SLIDER
-<<<<<<< HEAD:econsim.nlogo
-318
-690
-525
-723
-=======
 314
 629
 521
 662
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 mb_threshold
 mb_threshold
 0
 100
-<<<<<<< HEAD:econsim.nlogo
-12
-=======
-8
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-<<<<<<< HEAD:econsim.nlogo
-566
-690
-770
-723
-=======
 564
 629
 768
 662
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 hb_threshold
 hb_threshold
 0
 100
-25
+0
 1
 1
 NIL
@@ -945,19 +846,15 @@ GDP = private consumption + gross investment + government spending + (exports �
 1
 
 SLIDER
-210
-482
-445
-515
+215
+480
+450
+513
 entitlement_spending
 entitlement_spending
 0
 100000
-<<<<<<< HEAD:econsim.nlogo
-15909
-=======
-29545
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+70909
 1
 1
 NIL
@@ -989,11 +886,7 @@ true
 false
 "" ""
 PENS
-<<<<<<< HEAD:econsim.nlogo
-"aggregate_pop" 1.0 0 -16777216 true "ask person[plot count turtles]" "ask person[plot count turtles]"
-=======
 "aggregate_pop" 1.0 0 -16777216 true "ask persons[plot count turtles]" "ask persons[plot count turtles]"
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
 "aggregate_wealth" 1.0 0 -7500403 true "ask turtles[plot aggregate_capital]" "ask turtles[plot aggregate_capital]"
 
 TEXTBOX
@@ -1017,18 +910,15 @@ Money Gov. spends on social services
 1
 
 SLIDER
-677
-168
-842
-201
+663
+130
+828
+163
 set_stimulus
 set_stimulus
 0
 100000
-<<<<<<< HEAD:econsim.nlogo
-0
-=======
-34000
+100000
 1
 1
 NIL
@@ -1043,12 +933,148 @@ mininum_wage
 mininum_wage
 0
 100
-50
->>>>>>> bc88590ac48c5f3f9629ceb1bb30c4f8d01eb7fb:econsim.nlogo
+2
 1
 1
 NIL
 HORIZONTAL
+
+PLOT
+826
+511
+1026
+661
+Market Equilibrium
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "ask turtles[plot equilibrium_quantity]" "ask turtles[plot equilibrium_quantity]"
+"pen-1" 1.0 0 -7500403 true "ask turtles[plot equilibrium_price]" "ask turtles[plot equilibrium_price]"
+
+TEXTBOX
+368
+682
+588
+722
+= = FED/Monetary Policy = =
+16
+0.0
+1
+
+SLIDER
+9
+721
+253
+754
+required_reserve_ratio
+required_reserve_ratio
+0
+100
+9
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+280
+710
+427
+775
+Money Multiplier
+money_multiplier
+17
+1
+16
+
+SLIDER
+663
+292
+832
+325
+%_gov_cuts
+%_gov_cuts
+0
+100
+38
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+466
+724
+724
+757
+buy_government_bonds
+buy_government_bonds
+0
+10000
+31
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+241
+775
+298
+840
+M1
+M1
+17
+1
+16
+
+MONITOR
+326
+775
+383
+840
+M2
+M2
+17
+1
+16
+
+MONITOR
+410
+775
+467
+840
+NIL
+M3
+17
+1
+16
+
+PLOT
+1040
+511
+1240
+661
+AD-AS Model
+AD
+AS
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"AD" 1.0 0 -16777216 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
+"AS" 1.0 0 -7500403 true "ask turtles[plot aggregate_supply]" "ask turtles[plot aggregate_supply]"
 
 @#$#@#$#@
 ## Instructions
@@ -1067,7 +1093,7 @@ The user simply plays around with the income tax rate and corporate tax rate sli
 Crowding out effect
 
 
-##LearnMore
+##WhatShouldIBeSeeing?
 http://jsher.myclassupdates.com/sitebuildercontent/sitebuilderfiles/feng.pdf
 Interesting phenomena to observe:
 - Balanced Budget Multiplier; 
@@ -1078,6 +1104,13 @@ Interesting phenomena to observe:
     If the gov. finances its deficits(invests in private market) investment spending         decreases, which slow down aggregate expenditures(GDP + unplanned investments)
 - Multiplier Effect:
     Changes in aggregate expenditures can increase GDP since the money entering the          market is used over many times
+- Monetarist Equation of Exchange
+    MV = PQ where V is a constant for the average amount of times a year money is           spent, M is supply of money and where P is the price and q is quantity. So 2 apples     for $5 represents only $10 in the supply of money that is being exchanged. While        there will be times where investments are kept in cold hands than at the bank, it       generally holds true in this simulation. 
+##LearnMore
+Frictional Unemployment - unemployment that happens because one job is too far from another
+Cyclical Unemployment - unemployment that results from disruptions in the economy(such as a recession or depression)
+Structural Unemployment- Demand for one's occupation or skills that one has can not get them a job
+Seasonal unemployment - Person can only work certain times of a year
 ## Credits
 
 Norman 
