@@ -117,15 +117,17 @@ to gold
 end
 to austerity
    ask turtles[
-    if timer < 7[set capital capital - 5
-                 set price price - 1
-                 set entitlement_spending entitlement_spending - 10
-    ]
-    if timer >= 7[set capital capital + 6
-                  set price price + 2
-                  set entitlement_spending entitlement_spending + 4
-    ]
-  ]
+     set entitlement_spending (entitlement_spending - (100 * %_gov_cuts))
+   ] 
+;    if timer < 7[set capital capital - 5
+;                 set price price - 1
+;                 set entitlement_spending entitlement_spending - 10
+;    ]
+;    if timer >= 7[set capital capital + 6
+;                  set price price + 2
+;                  set entitlement_spending entitlement_spending + 4
+;    ]
+;  ]
   ;lowers government spending and raises tax rates
 end
 to nit
@@ -289,6 +291,18 @@ to set_funding
        [set capital 50000]
        [set capital 10000]
      ]
+end
+to-report money_multiplier
+  report (1 / required_reserve_ratio)
+end
+to-report M1
+  ask turtles[report aggregate_capital + capital_gains]
+end
+to-report M2
+  ask turtles[report M1 + dividends]
+end
+to-report M3
+  ask turtles[report M2 + capital] ; fix to reflect large deposits
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -470,10 +484,10 @@ Austrians\nDon't pay attention to the graphs above! They're just black magic.
 1
 
 TEXTBOX
-689
-346
-839
-402
+685
+363
+835
+419
 Reaganomist\nYour public appeal automatically boosts supply and lowers tax rates 10%\n
 11
 0.0
@@ -505,7 +519,7 @@ BUTTON
 325
 Austerity
 austerity
-NIL
+T
 1
 T
 OBSERVER
@@ -533,10 +547,10 @@ NIL
 1
 
 BUTTON
-686
-408
-779
-441
+684
+426
+780
+459
 NIL
 Deregulate
 NIL
@@ -625,10 +639,10 @@ PENS
 "Supply" 1.0 0 -16777216 true "ask turtles[plot supply]" "ask turtles[plot supply]"
 
 SLIDER
-15
-53
-187
-86
+750
+724
+922
+757
 fed_interest_rates
 fed_interest_rates
 0
@@ -657,10 +671,10 @@ NIL
 1
 
 BUTTON
-686
-450
-782
-483
+685
+465
+781
+498
 Abolish FED
 abolish_fed
 NIL
@@ -708,7 +722,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-27
+100
 1
 1
 NIL
@@ -723,7 +737,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-86
+87
 1
 1
 NIL
@@ -738,7 +752,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-7
+100
 1
 1
 NIL
@@ -778,7 +792,7 @@ mb_threshold
 mb_threshold
 0
 100
-91
+93
 1
 1
 NIL
@@ -828,7 +842,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-42196
+1
 1
 1
 NIL
@@ -931,6 +945,105 @@ false
 PENS
 "default" 1.0 0 -16777216 true "ask turtles[plot equilibrium_price]" "ask turtles[plot equilibrium_price]"
 "pen-1" 1.0 0 -7500403 true "ask turtles[plot equilibrium_quantity]" "ask turtles[plot equilibrium_quantity]"
+
+TEXTBOX
+368
+682
+588
+722
+= = FED/Monetary Policy = =
+16
+0.0
+1
+
+SLIDER
+9
+721
+253
+754
+required_reserve_ratio
+required_reserve_ratio
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+280
+710
+427
+775
+Money Multiplier
+money_multiplier
+17
+1
+16
+
+SLIDER
+652
+326
+824
+359
+%_gov_cuts
+%_gov_cuts
+0
+100
+20
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+466
+724
+724
+757
+buy_government_bonds
+buy_government_bonds
+0
+10000
+0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+241
+775
+298
+840
+M1
+M1
+17
+1
+16
+
+MONITOR
+326
+775
+383
+840
+M2
+M2
+17
+1
+16
+
+MONITOR
+410
+775
+467
+840
+NIL
+M3
+17
+1
+16
 
 @#$#@#$#@
 ## Instructions
