@@ -892,7 +892,7 @@ set_stimulus
 set_stimulus
 0
 100000
-9333
+100000
 1
 1
 NIL
@@ -907,7 +907,7 @@ mininum_wage
 mininum_wage
 0
 100
-56
+2
 1
 1
 NIL
@@ -949,7 +949,7 @@ The user simply plays around with the income tax rate and corporate tax rate sli
 Crowding out effect
 
 
-##LearnMore
+##WhatShouldIBeSeeing?
 http://jsher.myclassupdates.com/sitebuildercontent/sitebuilderfiles/feng.pdf
 Interesting phenomena to observe:
 - Balanced Budget Multiplier; 
@@ -960,6 +960,11 @@ Interesting phenomena to observe:
     If the gov. finances its deficits(invests in private market) investment spending         decreases, which slow down aggregate expenditures(GDP + unplanned investments)
 - Multiplier Effect:
     Changes in aggregate expenditures can increase GDP since the money entering the          market is used over many times
+##LearnMore
+Frictional Unemployment - unemployment that happens because one job is too far from another
+Cyclical Unemployment - unemployment that results from disruptions in the economy(such as a recession or depression)
+Structural Unemployment- Demand for one's occupation or skills that one has can not get them a job
+Seasonal unemployment - Person can only work certain times of a year
 ## Credits
 
 Norman 
