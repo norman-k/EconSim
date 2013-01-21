@@ -42,7 +42,8 @@ to setup
    
 end
 to go
-  ask persons[wiggle]
+  
+  ;ask persons[face]
   ask turtles[setup-plots
   if price < equilibrium_price[
   set price price + 1
@@ -480,7 +481,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-26
+0
 1
 1
 NIL
@@ -663,7 +664,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-19
+0
 1
 1
 NIL
@@ -837,7 +838,7 @@ set_stimulus
 set_stimulus
 0
 100000
-100000
+0
 1
 1
 NIL
@@ -1000,7 +1001,7 @@ TEXTBOX
 885
 235
 1035
-335
+291
 Backs each dollar introduced with gold, lowering inflation rates dramatically.
 12
 0.0
