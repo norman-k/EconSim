@@ -480,7 +480,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-24
+26
 1
 1
 NIL
@@ -773,7 +773,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-1
+100000
 1
 1
 NIL
@@ -837,7 +837,7 @@ set_stimulus
 set_stimulus
 0
 100000
-12667
+100000
 1
 1
 NIL
