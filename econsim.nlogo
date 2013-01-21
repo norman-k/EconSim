@@ -311,7 +311,7 @@ to-report M3
 end
 to-report aggregate_supply; Y = Y* + α·(P-Pe)
   let y (C + G + I)
-    let a 1
+    let a 0.6
     let P price
     let Pj equilibrium_price
     report (y + a * (P - Pj))
@@ -663,7 +663,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-66
+19
 1
 1
 NIL
@@ -678,7 +678,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-99
+39
 1
 1
 NIL
@@ -693,7 +693,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-100
+48
 1
 1
 NIL
@@ -718,7 +718,7 @@ lb_threshold
 lb_threshold
 0
 100
-15
+1
 1
 1
 NIL
@@ -773,7 +773,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-78112
+1
 1
 1
 NIL
@@ -837,7 +837,7 @@ set_stimulus
 set_stimulus
 0
 100000
-100000
+12667
 1
 1
 NIL
@@ -896,7 +896,7 @@ required_reserve_ratio
 required_reserve_ratio
 0
 100
-20
+41
 1
 1
 NIL
@@ -934,7 +934,7 @@ true
 "set-plot-y-range  min-pycor max-pycor" ""
 PENS
 "AD" 1.0 0 -5298144 true "ask turtles[plot (C + G + I)]" "ask turtles[plot (C + G + I)]"
-"AS" 1.0 0 -14070903 true "ask turtles[plot aggregate_supply]" "ask turtles[plot aggregate_supply]"
+"AS" 1.0 0 -14070903 true "ask turtles[plotxy aggregate_supply (C + G + I) ]" "ask turtles[plotxy aggregate_supply (C + G + I) ]"
 
 TEXTBOX
 1309
@@ -1138,7 +1138,7 @@ TEXTBOX
 493
 1592
 703
-A graph relating the demand felt throughout the whole economy to the total supply of goods available. In general, over the long-term, any increase in capital would slowly increase the aggregate demand(AD) while sharly increasing the aggregate supply(AS). So much so that AS will appear as a vertical line to the user.
+A graph relating the demand felt throughout the whole economy to the total supply of goods available. In general, over the long-term, any increase in capital would slowly increase the aggregate demand(AD) while sharply increasing the aggregate supply(AS). So much so that AS will appear as a vertical line to the user.
 12
 0.0
 1
