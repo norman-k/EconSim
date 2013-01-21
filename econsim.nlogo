@@ -131,7 +131,7 @@ to gold
 end
 to austerity
    ask turtles[
-     if entitlement_spending != 0[set entitlement_spending ((%_gov_cuts / 100) * entitlement_spending)]
+     if entitlement_spending > 0[set entitlement_spending ((%_gov_cuts / 100) * entitlement_spending)]
    ] 
 ;    if timer < 7[set capital capital - 5
 ;                 set price price - 1
@@ -347,10 +347,10 @@ ticks
 30.0
 
 BUTTON
-841
-10
-995
-43
+658
+102
+812
+135
 Nationalize the Banks!
 stimulus
 T
@@ -398,30 +398,30 @@ NIL
 1
 
 TEXTBOX
-672
-10
-821
-59
+660
+48
+809
+97
 Keynesian:\nRemember, in the long run we're all dead!
 12
 0.0
 1
 
 TEXTBOX
-884
-164
-1034
-194
+881
+48
+1031
+78
 Monetarist:\nInvest in Gold!
 12
 0.0
 1
 
 BUTTON
-879
-195
-991
-228
+876
+79
+988
+112
 Hard Currency
 ask turtles[gold]
 T
@@ -487,16 +487,6 @@ corporate_tax_rates
 NIL
 HORIZONTAL
 
-TEXTBOX
-669
-256
-819
-316
-Austrians\nDon't pay attention to the graphs above! They're just black magic.
-12
-0.0
-1
-
 PLOT
 1461
 331
@@ -517,10 +507,10 @@ PENS
 "rate" 1.0 0 -14985354 true "plot lb_income_tax_rates" "plot lb_income_tax_rates"
 
 BUTTON
-660
-59
-815
-94
+656
+277
+811
+312
 Austerity
 austerity
 T
@@ -534,29 +524,12 @@ NIL
 1
 
 BUTTON
-877
-307
-1048
-340
+874
+196
+1045
+229
 Negative Income Tax
 nit
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-662
-322
-759
-355
-NIL
-Recapitalize
 NIL
 1
 T
@@ -664,7 +637,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-0
+5
 1
 1
 NIL
@@ -774,7 +747,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-100000
+1
 1
 1
 NIL
@@ -830,15 +803,15 @@ Money the Government spends on social services
 1
 
 SLIDER
-1019
-10
-1184
-43
+659
+142
+824
+175
 set_stimulus
 set_stimulus
 0
 100000
-0
+8667
 1
 1
 NIL
@@ -904,10 +877,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-658
-110
-827
-143
+654
+328
+823
+361
 %_gov_cuts
 %_gov_cuts
 0
@@ -978,98 +951,51 @@ The reserve requirement is the mininum number of deposits or invetsments that a 
 1
 
 TEXTBOX
-851
-51
-1150
-136
+664
+186
+822
+271
 Adds more money into the economy, inreases the value of each prices all around since people have more money to spend(inflation)
-16
+12
 0.0
 1
 
 TEXTBOX
-670
-152
-820
-243
+666
+370
+816
+461
 Decreases entitlement spending(and is done in conjugation with tax rate increases) It could also lead to a drop in capital and thus slower inflation.
 12
 0.0
 1
 
 TEXTBOX
-885
-235
-1035
-291
+882
+119
+1032
+181
 Backs each dollar introduced with gold, lowering inflation rates dramatically.
 12
 0.0
 1
 
 TEXTBOX
-885
-352
-1043
-460
+882
+241
+1040
+349
 Lowest 10% of people, in terms of income, gain money instead of paying a tax and the next 10% simply pay no tax
 12
 0.0
 1
 
-BUTTON
-660
-444
-796
-477
-Free Banking
-Free_bank
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
 TEXTBOX
-662
-359
-784
-438
-If a company is very low in funding another company will buy it, and shortly a new one will pop up.
-12
-0.0
-1
-
-TEXTBOX
-848
-162
-863
-382
+847
+61
+862
+281
 -\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n
-16
-0.0
-1
-
-TEXTBOX
-688
-239
-838
-259
-= = = = = =
-16
-0.0
-1
-
-TEXTBOX
-949
-133
-1099
-153
-= = = = = 
 16
 0.0
 1
@@ -1140,16 +1066,6 @@ TEXTBOX
 1592
 703
 A graph relating the demand felt throughout the whole economy to the total supply of goods available. In general, over the long-term, any increase in capital would slowly increase the aggregate demand(AD) while sharply increasing the aggregate supply(AS). So much so that AS will appear as a vertical line to the user.
-12
-0.0
-1
-
-TEXTBOX
-808
-446
-958
-491
-All banks are free from any regulations placed on them.
 12
 0.0
 1
