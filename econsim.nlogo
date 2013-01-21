@@ -469,7 +469,7 @@ true
 "set-plot-y-range  min-pycor max-pycor" ""
 PENS
 "GDP" 1.0 0 -5298144 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
-"IR" 1.0 0 -14454117 true "plot 15" "plot 15"
+"IR" 1.0 0 -14454117 true "ask turtles[plotxy fed_interest_rates (C + G + I) ]" "ask turtles[plotxy fed_interest_rates (C + G + I) ]"
 
 SLIDER
 11
@@ -633,7 +633,7 @@ fed_interest_rates
 fed_interest_rates
 0
 15
-1.7
+11.8
 0.1
 1
 NIL
@@ -934,7 +934,7 @@ true
 "set-plot-y-range  min-pycor max-pycor" ""
 PENS
 "AD" 1.0 0 -5298144 true "ask turtles[plot (C + G + I)]" "ask turtles[plot (C + G + I)]"
-"AS" 1.0 0 -14070903 true "ask turtles[plotxy aggregate_supply (C + G + I) ]" "ask turtles[plotxy aggregate_supply (C + G + I) ]"
+"AS" 1.0 0 -14070903 true "ask turtles[plotxy (C + G + I) aggregate_supply ]" "ask turtles[plotxy (C + G + I) aggregate_supply  ]"
 
 TEXTBOX
 1309
@@ -1221,8 +1221,8 @@ Interesting phenomena to observe:
     MV = PQ where V is a constant for the average amount of times a year money is           spent, M is supply of money and where P is the price and Q is quantity. So 2 apples     for $5 represents only $10 in the supply of money that is being exchanged. While        there will be times where investments are kept in cold hands than at the bank, it       generally holds true in this simulation. 
 - Phillips Curve:
     This is a very interesting phenomena where if a lot of money is put into the market     inflation rates at first go crazy and unemployment goes down, but then it               stagflates by itself over time. 
-- AD/AS shortrun:
-    When there is a sudden increase in capital, either through tax decreases or             stimulus packages, aggregate demand slowly rises up while overtime supply shoots up     so fast that it looks like a vertical line. What happens in the shortrun is still       debated between economists today.
+- AD/AS longrun:
+    When there is a sudden increase in capital, either through tax decreases or             stimulus packages, aggregate demand slowly rises up while overtime supply shoots up      so fast that it looks like a vertical line. What happens in the shortrun is still        debated between economists today, with some economists saying that there is a slow       rise with AS and others saying that it stays horizontal.
  
 ##LearnMore
 Frictional Unemployment - unemployment that happens because one job is too far from another
