@@ -20,7 +20,7 @@ to setup
   create-corporations 10
          [set shape "corporation"
           set funding 100
-          ;set_funding
+          set_funding
           set workers 4
           set size 5
           setxy random-xcor random-ycor
@@ -33,14 +33,12 @@ to setup
           set size 5
           setxy random-xcor random-ycor
           set bank_rate 2
-          set capital_gains capital / 10
+          set capital_gains required_reserve_ratio * 10
           set dividends funding / (capital_gains + 0.01)
          ]
-    create-national_banks 1
-         [set bond equilibrium_price * 50 * buy_government_bonds; change this to the actual formula utilized
-         ]
-   ask turtles[setup-plots]
 
+   ask turtles[setup-plots]
+   
    
 end
 to go
@@ -59,9 +57,20 @@ to go
     set supply supply + 1
   ]
   ]
+ ; ask persons[if wage < lb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
+ ; ask persons[if wage >= lb_threshold and wage <= mb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
+ ; ask persons[if wage > hb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
+
+  ;every 5[create-persons 50 
+  ;       [set shape "person"
+  ;        set_wage
+  ;        set capital wage
+  ;       ]
+  ;]
 end
 to free_bank
-  set corporate_tax_rates 0 
+  set corporate_tax_rates 0
+  set set_stimulus 0 
 end
 to abolish_fed
   set fed []
@@ -82,7 +91,7 @@ to-report equilibrium_quantity; (ad + bf/(b + d))
   let p ((a * d + b * f)/(b + d))
   report p
 end
-to-report demand_curve; P = a - bQd a is the highest price anyone would way(reservation pay; remember paying anything less is a consumer surplus for the buyer which is (reservation price - market price)) and b is the slope (P = 0)
+to-report demand_curve; P = a - bQd a is the highest price anyone would pay(reservation pay; remember paying anything less is a consumer surplus for the buyer which is (reservation price - market price)) and b is the slope (P = 0)
   let a price + (capital / 100)
   let b 1.75 ; elastic
   let d a / b
@@ -115,13 +124,13 @@ to stimulus
   ;add: increases the inflation rate to 5%, and increases capital, along with workers. But lowers wage and after 7 seconds inflation and worker increase stops and GDP goes down.
 end
 to gold
-  if timer <= 4[set inflation inflation_rate + 0.25 set price price + 0.25]
+  set inflation inflation_rate + 0.25 set price price + 0.25
   
   ;reduces inflation rate/increase in percentage of capital to 0.25% from 2%
 end
 to austerity
    ask turtles[
-     set entitlement_spending (entitlement_spending - (100 * %_gov_cuts))
+     if entitlement_spending != 0[set entitlement_spending ((%_gov_cuts / 100) * entitlement_spending)]
    ] 
 ;    if timer < 7[set capital capital - 5
 ;                 set price price - 1
@@ -135,7 +144,8 @@ to austerity
   ;lowers government spending and raises tax rates
 end
 to nit
-  ;10% of person turtles have no income tax 10% gain capital and 80% lose by the amount determined by the slider 
+  ask persons[if wage < capital / 10[set lb_income_tax_rates 0]
+  if wage >= capital / 10 and wage <= capital / 20[set lb_income_tax_rates 5]]
 end
 to deregulate
   ;lowers corporate tax 2% every year for 10 years and gets rid of cap on recapitalization limits and lowers mininum wage to $5.50
@@ -144,15 +154,27 @@ to regulate
   ;hightens corporate tax 2% every year for 10 years sets limit to 1 company and has a mininum wage of $10
 end
 to recapitalize
- ; ask corporations[if funding <= 1000[set state "bankrupt"]
- ;   if state = "bankrupt"[
- ;     wait 2
- ;     die 
- ;   ask corporation 0[
- ;     set funding funding + 1000
- ;  ]
- ; ]
- ; ]
+  ask corporations[if funding <= 1000[set state "bankrupt"]
+   if state = "bankrupt"[
+      die 
+   ask corporation 0[
+      set funding funding + 1000
+   ]
+   ]
+  ]
+      create-corporations 1
+         [set shape "corporation"
+          set funding 100
+          set_funding
+          set workers 4
+          set size 5
+          setxy random-xcor random-ycor
+          set price 5.00
+          set supply 1000 * (count corporations)
+         ]
+   
+  
+  
 end
 to-report unemployment_rate
      report ((count persons with[ wage = 0]) / (count turtles) * 100)
@@ -184,8 +206,8 @@ to-report deficit
 end
 to-report debt
   let q 0
-  let h 0
-  set q deficit * h
+  let h deficit
+  every 2[set q h] 
   report q
 end
 to-report inflation_rate
@@ -204,32 +226,11 @@ to-report C ;private_consumption or C = C0 + C1((y)^d) where c0 is autonomous sp
   report ((total_saving - total_borrowing) * count persons) + (MPC * aggregate_capital)
 end
 to-report M
-  report (100 * 50)
+  report (supply * price)
 end  
 to-report Government_spending
     report entitlement_spending 
 end
-to-report L ; labor effort
-  report 0.6
-end
-to-report kappa
-  report ((inflation_rate / 100) / 4)
-end
-to-report chi
-  report 1
-end
-;to-report p
-;  report 1
-;end
-to-report v
-  report 1
-end
-to-report beta
-  report 0.1
-end
-;to-report intertemporal_utility_function 
-;report (((beta ^ 0) * ((ln (C)) + (chi * ln ((M) / (P))) + (v * (government_spending) - (kappa * ((l) ^ 2))))))
-;end
 to-report total_borrowing
   report capital
 end
@@ -289,12 +290,12 @@ to-report G
   report entitlement_spending
 end 
 to set_funding
-   ifelse random(50) > 40
+   ask corporations[ifelse random(50) > 40
      [set funding 100000]
      [ifelse random(50) > 5
-       [set capital 50000]
-       [set capital 10000]
-     ]
+       [set funding 50000]
+       [set funding 10000]
+     ]]
 end
 to-report money_multiplier
   report (1 / required_reserve_ratio)
@@ -318,10 +319,10 @@ to-report aggregate_supply; Y = Y* + α·(P-Pe)
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-649
-470
+211
+11
+650
+471
 16
 16
 13.0
@@ -345,10 +346,10 @@ ticks
 30.0
 
 BUTTON
-673
-188
-827
-221
+841
+10
+995
+43
 Nationalize the Banks!
 stimulus
 T
@@ -396,33 +397,33 @@ NIL
 1
 
 TEXTBOX
-671
-83
-820
-132
+672
+10
+821
+59
 Keynesian:\nRemember, in the long run we're all dead!
-11
+12
 0.0
 1
 
 TEXTBOX
-896
-208
-1046
-236
+884
+164
+1034
+194
 Monetarist:\nInvest in Gold!
-11
+12
 0.0
 1
 
 BUTTON
-894
-248
-1006
-281
+879
+195
+991
+228
 Hard Currency
 ask turtles[gold]
-NIL
+T
 1
 T
 OBSERVER
@@ -433,9 +434,9 @@ NIL
 1
 
 PLOT
-827
+1060
 332
-1027
+1299
 482
 Phillips Curve
 Unemployment Rate
@@ -445,17 +446,17 @@ Inflation Rate
 0.0
 10.0
 true
-false
-"" ""
+true
+"set-plot-y-range  min-pycor max-pycor" ""
 PENS
-"unemployment_rate" 1.0 0 -16777216 true "ask turtles[plot unemployment_rate]" "plot unemployment_rate"
-"inflation_rate" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot inflation_rate]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot inflation_rate]"
+"Unemp." 1.0 0 -5298144 true "ask turtles[plot unemployment_rate]" "ask turtles[plot unemployment_rate]"
+"Inflat." 1.0 0 -15582384 true "ask turtles[plot inflation_rate]" "ask turtles[plot inflation_rate]"
 
 PLOT
-1262
-512
-1462
-662
+1199
+700
+1427
+850
 IS/LM
 GDP
 Interest Rates
@@ -464,52 +465,42 @@ Interest Rates
 0.0
 15.0
 true
-false
-"" ""
+true
+"set-plot-y-range  min-pycor max-pycor" ""
 PENS
-"GDP" 1.0 0 -16777216 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
-"interest_rates" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot 15" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot 15"
+"GDP" 1.0 0 -5298144 true "ask turtles[plot C + G + I]" "ask turtles[plot C + G + I]"
+"IR" 1.0 0 -14454117 true "plot 15" "plot 15"
 
 SLIDER
-16
-159
-188
-192
+11
+184
+195
+217
 corporate_tax_rates
 corporate_tax_rates
 0
 100
-0
+24
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-1090
-190
-1240
-246
+669
+256
+819
+316
 Austrians\nDon't pay attention to the graphs above! They're just black magic.
-11
-0.0
-1
-
-TEXTBOX
-687
-359
-837
-415
-Reaganomist\nYour public appeal automatically boosts supply and lowers tax rates 10%\n
-11
+12
 0.0
 1
 
 PLOT
-1041
-332
-1241
-482
+1461
+331
+1695
+481
 Laffer Curve
 Tax Revenue
 Tax Rate
@@ -518,17 +509,17 @@ Tax Rate
 0.0
 10.0
 true
-false
-"" ""
+true
+"set-plot-y-range  min-pycor max-pycor" ""
 PENS
-"tax_revenue" 1.0 0 -16777216 true "plot tax_revenue" "plot tax_revenue"
-"tax_rate" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot lb_income_tax_rates" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nplot lb_income_tax_rates"
+"rev." 1.0 0 -5298144 true "plot tax_revenue" "plot tax_revenue"
+"rate" 1.0 0 -14985354 true "plot lb_income_tax_rates" "plot lb_income_tax_rates"
 
 BUTTON
-672
-242
-827
-277
+660
+59
+815
+94
 Austerity
 austerity
 T
@@ -542,10 +533,10 @@ NIL
 1
 
 BUTTON
-894
-291
-1043
-324
+877
+307
+1048
+340
 Negative Income Tax
 nit
 NIL
@@ -559,27 +550,10 @@ NIL
 1
 
 BUTTON
-684
-426
-780
-459
-NIL
-Deregulate
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-1088
-249
-1185
-282
+662
+322
+759
+355
 NIL
 Recapitalize
 NIL
@@ -593,10 +567,10 @@ NIL
 1
 
 MONITOR
-1261
-185
-1318
-230
+1178
+272
+1235
+317
 Deficit
 deficit
 17
@@ -604,10 +578,10 @@ deficit
 11
 
 MONITOR
-1261
-255
-1319
-300
+1408
+272
+1466
+317
 Debt
 debt
 17
@@ -615,11 +589,11 @@ debt
 11
 
 PLOT
-914
-13
-1114
-163
-Price
+1157
+95
+1357
+245
+Price of Products
 NIL
 NIL
 0.0
@@ -630,14 +604,14 @@ true
 false
 "" ""
 PENS
-"demand" 1.0 0 -16777216 true "ask turtles[plot demand]" "ask turtles[plot demand]"
+"demand" 1.0 0 -14439633 true "ask turtles[plot demand]" "ask turtles[plot demand]"
 
 PLOT
-1134
-13
-1334
-163
-Quantity
+1386
+96
+1608
+246
+Quantity of Goods
 NIL
 NIL
 0.0
@@ -648,233 +622,178 @@ true
 false
 "" ""
 PENS
-"Supply" 1.0 0 -16777216 true "ask turtles[plot supply]" "ask turtles[plot supply]"
+"Supply" 1.0 0 -14454117 true "ask turtles[plot supply]" "ask turtles[plot supply]"
 
 SLIDER
-750
-724
-922
-757
+357
+669
+543
+702
 fed_interest_rates
 fed_interest_rates
 0
 15
-15
+1.7
 0.1
 1
 NIL
 HORIZONTAL
 
-BUTTON
-1087
-289
-1190
-322
-Free Banking
-free_bank
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-685
-465
-781
-498
-Abolish FED
-abolish_fed
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
 SLIDER
-16
-205
-188
-238
+9
+232
+195
+265
 capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-19.5
+17.5
 0.5
 1
 NIL
 HORIZONTAL
 
-SWITCH
-6
-375
-205
-408
-regressive_tax_rate
-regressive_tax_rate
-1
-1
--1000
-
 SLIDER
-88
-530
-284
-563
+77
+485
+273
+518
 lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-100
+66
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-320
-530
-527
-563
+312
+488
+519
+521
 mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-0
+99
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-564
-530
-766
-563
+556
+488
+758
+521
 hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-11
+100
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-349
-564
-499
-624
+341
+522
+491
+582
 lb = lower bracket\nmb = middle bracket\nhb = high bracket\n
 16
 0.0
 1
 
 SLIDER
-88
-629
-283
-662
+80
+587
+275
+620
 lb_threshold
 lb_threshold
 0
 100
-1
+15
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-314
-629
-521
-662
+306
+587
+513
+620
 mb_threshold
 mb_threshold
 0
 100
-0
+18
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-564
-629
-768
-662
+556
+587
+760
+620
 hb_threshold
 hb_threshold
 0
 100
-0
+89
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-40
-419
-190
-479
-Puts a ceiling cap on what salary income tax can go up to
-16
-0.0
-1
-
-TEXTBOX
-1344
-121
-1494
-160
+1260
+863
+1410
+902
 GDP = private consumption + gross investment + government spending + (exports − imports)
 10
 0.0
 1
 
 SLIDER
-215
-480
-450
-513
+8
+370
+201
+403
 entitlement_spending
 entitlement_spending
 0
 100000
-70909
+78112
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-897
-514
-1047
-534
+1168
+526
+1318
+546
 NIL
 16
 0.0
 1
 
 PLOT
-1255
-332
-1455
-482
+795
+705
+1029
+855
 Income Inequality
 Aggregate Pop.
 Aggregate Wealth
@@ -883,37 +802,37 @@ Aggregate Wealth
 0.0
 10.0
 true
-false
-"" ""
+true
+"set-plot-y-range  min-pycor max-pycor" ""
 PENS
-"aggregate_pop" 1.0 0 -16777216 true "ask persons[plot count turtles]" "ask persons[plot count turtles]"
-"aggregate_wealth" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_capital]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_capital]"
+"Pop." 1.0 0 -5298144 true "ask persons[plot count turtles]" "ask persons[plot count turtles]"
+"Wealth" 1.0 0 -14985354 true "ask turtles[plot aggregate_capital]" "ask turtles[plot aggregate_capital]"
 
 TEXTBOX
-1343
-83
-1493
-111
-Since sim. is closed system (exports - imports) = 0.
+1261
+910
+1411
+952
+Since the simulation is a closed system, (exports - imports) = 0.
 11
 0.0
 1
 
 TEXTBOX
-463
-485
-613
-513
-Money Gov. spends on social services
+38
+410
+188
+438
+Money the Government spends on social services
 11
 0.0
 1
 
 SLIDER
-663
-130
-828
-163
+1019
+10
+1184
+43
 set_stimulus
 set_stimulus
 0
@@ -925,159 +844,348 @@ NIL
 HORIZONTAL
 
 SLIDER
-17
-579
-203
-612
+12
+539
+198
+572
 mininum_wage
 mininum_wage
 0
 100
-2
+17
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-826
-511
-1026
-661
+792
+524
+1029
+674
 Market Equilibrium
-NIL
-NIL
+Tending Quantity
+Tending Price
 0.0
 10.0
 0.0
 10.0
 true
-false
-"" ""
+true
+"set-plot-y-range  min-pycor max-pycor" ""
 PENS
-"default" 1.0 0 -16777216 true "ask turtles[plot equilibrium_quantity]" "ask turtles[plot equilibrium_quantity]"
-"pen-1" 1.0 0 -7500403 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot equilibrium_price]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot equilibrium_price]"
+"Q" 1.0 0 -5298144 true "ask turtles[plot equilibrium_quantity]" "ask turtles[plot equilibrium_quantity]"
+"P" 1.0 0 -14454117 true "ask turtles[plot equilibrium_price]" "ask turtles[plot equilibrium_price]"
 
 TEXTBOX
-368
-682
-588
-722
+440
+629
+660
+669
 = = FED/Monetary Policy = =
 16
 0.0
 1
 
 SLIDER
-9
-721
-253
-754
-required_reserve_ratio
-required_reserve_ratio
-0
-100
-9
-1
-1
-NIL
-HORIZONTAL
-
-MONITOR
-280
-710
-427
-775
-Money Multiplier
-money_multiplier
-17
-1
-16
-
-SLIDER
-663
-292
-832
+81
+668
 325
-%_gov_cuts
-%_gov_cuts
+701
+required_reserve_ratio
+required_reserve_ratio
 0
 100
-38
+20
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-466
-724
-724
-757
-buy_government_bonds
-buy_government_bonds
+658
+110
+827
+143
+%_gov_cuts
+%_gov_cuts
 0
-10000
-31
+100
+40
 1
 1
 NIL
 HORIZONTAL
-
-MONITOR
-241
-775
-298
-840
-M1
-M1
-17
-1
-16
-
-MONITOR
-326
-775
-383
-840
-M2
-M2
-17
-1
-16
-
-MONITOR
-410
-775
-467
-840
-NIL
-M3
-17
-1
-16
 
 PLOT
-1040
-511
-1240
-661
+1198
+517
+1424
+667
 AD-AS Model
-AD
-AS
+GDP
+Price
 0.0
 10.0
 0.0
 10.0
 true
-false
-"ask turtles[plotxy (C + G + I) aggregate_supply]" "ask turtles[plotxy (C + G + I) aggregate_supply]"
+true
+"set-plot-y-range  min-pycor max-pycor" ""
 PENS
-"AD" 1.0 0 -7500403 true "ask turtles[plotxy (C + G + I) aggregate_supply]" "ask turtles[plot (C + G + I)]"
-"AS" 1.0 0 -2674135 true "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_supply]" "auto-plot-off\nplotxy 0 0\nplotxy 1000000000 0\nask turtles[plot aggregate_supply]"
+"AD" 1.0 0 -5298144 true "ask turtles[plot (C + G + I)]" "ask turtles[plot (C + G + I)]"
+"AS" 1.0 0 -14070903 true "ask turtles[plot aggregate_supply]" "ask turtles[plot aggregate_supply]"
+
+TEXTBOX
+1309
+339
+1453
+471
+The Phillips Curve is the short term phenomenom between the way inflation and unemploymet relate to each other after a massive influx in capital. Add a stimulus or 2 to see it in action!
+12
+0.0
+1
+
+TEXTBOX
+34
+11
+184
+180
+WELCOME:\nKey terms:\nCapital: Money\nCapital gains: Money earned through investments\nCorporations: Businesses\nEntitlement: Social services\nMininum Wage: Lowest salary allowed\nThreshold: Maxium  amount a tax rate applies to\nLook around and explore the other notes! 
+10
+0.0
+1
+
+TEXTBOX
+582
+664
+828
+772
+The FED, or Federal Reserve, controls monetary policy. I.e. it dictates how much a bank can borrow and how much money must be in a bank.
+12
+0.0
+1
+
+TEXTBOX
+115
+706
+265
+826
+The reserve requirement is the mininum number of deposits or invetsments that a bank must have. 
+12
+0.0
+1
+
+TEXTBOX
+851
+51
+1150
+136
+Adds more money into the economy, inreases the value of each prices all around since people have more money to spend(inflation)
+16
+0.0
+1
+
+TEXTBOX
+670
+152
+820
+243
+Decreases entitlement spending(and is done in conjugation with tax rate increases) It could also lead to a drop in capital and thus slower inflation.
+12
+0.0
+1
+
+TEXTBOX
+885
+235
+1035
+335
+Backs each dollar introduced with gold, lowering inflation rates dramatically.
+12
+0.0
+1
+
+TEXTBOX
+885
+352
+1043
+460
+Lowest 10% of people, in terms of income, gain money instead of paying a tax and the next 10% simply pay no tax
+12
+0.0
+1
+
+BUTTON
+660
+444
+796
+477
+Free Banking
+Free_bank
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+TEXTBOX
+662
+359
+784
+438
+If a company is very low in funding another company will buy it, and shortly a new one will pop up.
+12
+0.0
+1
+
+TEXTBOX
+848
+162
+863
+382
+-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n
+16
+0.0
+1
+
+TEXTBOX
+688
+239
+838
+259
+= = = = = =
+16
+0.0
+1
+
+TEXTBOX
+949
+133
+1099
+153
+= = = = = 
+16
+0.0
+1
+
+TEXTBOX
+1249
+281
+1399
+321
+How much you spend every second
+12
+0.0
+1
+
+TEXTBOX
+1480
+278
+1630
+338
+Total amount you spent since you pressed 'go'
+12
+0.0
+1
+
+TEXTBOX
+1255
+17
+1552
+93
+The Laws of Sppply and Demand have corporations compete with each to lower or highten their prices/quantity in order to  maximize their profit and work for the maximization of the consumer's savings
+12
+0.0
+1
+
+TEXTBOX
+1043
+514
+1193
+679
+A graph displaying to the user the changing equilibrium prices/quantities desired by the consumers aand companies. Notice how under massive inflation or stimulus both rise due to increasing capital and, as a result, an increase in demand. 
+12
+0.0
+1
+
+TEXTBOX
+1044
+702
+1194
+1042
+A graph displaying the difference between the wealth accumulated by everybody versus the size of the population. The more spread out, or higher, the tax rates the lower the wealth line and thus a higher inequality. With inflation there is a bump in wealth due to more capital and more demand for goods.
+12
+0.0
+1
+
+TEXTBOX
+1702
+332
+1852
+482
+How much revenue the government is bringing in, based on how high or low the tax rates are. Higher tax rates may increase GDP and highten income inequaliity, along with slowing down price increase due to less capital and thus slower inflation. 
+12
+0.0
+1
+
+TEXTBOX
+1436
+493
+1592
+703
+A graph relating the demand felt throughout the whole economy to the total supply of goods available. In general, over the long-term, any increase in capital would slowly increase the aggregate demand(AD) while sharly increasing the aggregate supply(AS). So much so that AS will appear as a vertical line to the user.
+12
+0.0
+1
+
+TEXTBOX
+808
+446
+958
+491
+All banks are free from any regulations placed on them.
+12
+0.0
+1
+
+TEXTBOX
+1436
+698
+1603
+923
+A graph relating FED_interest_rates with GDP growth. GDP, a calculation of all products and services avaiable in an economy, generally rises with increases in capital and inflation. It will also fall if government spending decreases, as that is taken into account as well. In general FED_interest_rates should be changed to help GDP perform an upward trend.
+12
+0.0
+1
+
+MONITOR
+299
+722
+525
+787
+Money Multiplier
+1 / required_reserve_ratio
+17
+1
+16
+
+TEXTBOX
+536
+730
+686
+805
+The money multiplier is just (1 / required_reserve ratio). It tells you the maximum amount of loans a bank can give
+12
+0.0
+1
 
 @#$#@#$#@
-## Instructions
+## About
 
 A simulation of a rudimentary network of markets. Consumers and Producers are simulated along with the affects of certain few governmental regulations on those agents.
 
@@ -1088,14 +1196,19 @@ Using the law of supply and demand along with various other recorded economic ph
 
 The user simply plays around with the income tax rate and corporate tax rate sliders, and the buttons under certain brances of macroeconomic theory which dictate certain patterns to follow when some action is taken by the buttons. The user will learn various phenomena proposed by those schools of thought by playing around with the rules in a simulated market and seeing what happens to the market's well-being. 
 
-## Changelog
+## Instructions
+The various amount of buttons/sliders control various aspects of the simulation. 
 
-Crowding out effect
-
+Tax Rates:
+ On the bottom and the side are various sliders for different brackets of income or corporate/capital gains tax rates. Income brakcets are determined by the thresholds the users set with the sliders below. I.e. the maximum income needed for the tax to apply. This various tax rates can then influence the laffer curve, i.e. how much revenue is received.
+ FED:
+ Under the FED section the user can control at what rate banks can borrow money from   the FED and how many deposits the banks must have. 
 
 ##WhatShouldIBeSeeing?
-http://jsher.myclassupdates.com/sitebuildercontent/sitebuilderfiles/feng.pdf
+REMEMBER: The red denotes the x-axis and the yellow the y-axis
 Interesting phenomena to observe:
+- Laws of Supply and Demand
+    Markets will always tend towards the price and supply where every seller sells and      every buyer buys, making everyone happy. 
 - Balanced Budget Multiplier; 
     Doubling both government spending and tax rates doubles GDP as well
 - Stagflation;
@@ -1105,7 +1218,12 @@ Interesting phenomena to observe:
 - Multiplier Effect:
     Changes in aggregate expenditures can increase GDP since the money entering the          market is used over many times
 - Monetarist Equation of Exchange
-    MV = PQ where V is a constant for the average amount of times a year money is           spent, M is supply of money and where P is the price and q is quantity. So 2 apples     for $5 represents only $10 in the supply of money that is being exchanged. While        there will be times where investments are kept in cold hands than at the bank, it       generally holds true in this simulation. 
+    MV = PQ where V is a constant for the average amount of times a year money is           spent, M is supply of money and where P is the price and Q is quantity. So 2 apples     for $5 represents only $10 in the supply of money that is being exchanged. While        there will be times where investments are kept in cold hands than at the bank, it       generally holds true in this simulation. 
+- Phillips Curve:
+    This is a very interesting phenomena where if a lot of money is put into the market     inflation rates at first go crazy and unemployment goes down, but then it               stagflates by itself over time. 
+- AD/AS shortrun:
+    When there is a sudden increase in capital, either through tax decreases or             stimulus packages, aggregate demand slowly rises up while overtime supply shoots up     so fast that it looks like a vertical line. What happens in the shortrun is still       debated between economists today.
+ 
 ##LearnMore
 Frictional Unemployment - unemployment that happens because one job is too far from another
 Cyclical Unemployment - unemployment that results from disruptions in the economy(such as a recession or depression)
