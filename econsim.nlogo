@@ -435,10 +435,10 @@ NIL
 1
 
 PLOT
-1060
-332
-1299
-482
+835
+337
+1074
+487
 Phillips Curve
 Unemployment Rate
 Inflation Rate
@@ -488,10 +488,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1461
-331
-1695
-481
+1236
+336
+1470
+486
 Laffer Curve
 Tax Revenue
 Tax Rate
@@ -541,10 +541,10 @@ NIL
 1
 
 MONITOR
-1178
-272
-1235
-317
+1097
+271
+1154
+316
 Deficit
 deficit
 17
@@ -552,10 +552,10 @@ deficit
 11
 
 MONITOR
-1408
-272
-1466
-317
+1327
+271
+1385
+316
 Debt
 debt
 17
@@ -563,10 +563,10 @@ debt
 11
 
 PLOT
-1157
-95
-1357
-245
+1076
+94
+1276
+244
 Price of Products
 NIL
 NIL
@@ -581,10 +581,10 @@ PENS
 "demand" 1.0 0 -14439633 true "ask turtles[plot demand]" "ask turtles[plot demand]"
 
 PLOT
-1386
-96
-1608
-246
+1305
+95
+1527
+245
 Quantity of Goods
 NIL
 NIL
@@ -911,10 +911,10 @@ PENS
 "AS" 1.0 0 -14070903 true "ask turtles[plotxy (C + G + I) aggregate_supply ]" "ask turtles[plotxy (C + G + I) aggregate_supply  ]"
 
 TEXTBOX
-1309
-339
-1453
-471
+1084
+344
+1228
+476
 The Phillips Curve is the short term phenomenom between the way inflation and unemploymet relate to each other after a massive influx in capital. Add a stimulus or 2 to see it in action!
 12
 0.0
@@ -1001,20 +1001,20 @@ TEXTBOX
 1
 
 TEXTBOX
-1249
-281
-1399
-321
+1168
+280
+1318
+320
 How much you spend every second
 12
 0.0
 1
 
 TEXTBOX
-1480
-278
-1630
-338
+1399
+277
+1549
+337
 Total amount you spent since you pressed 'go'
 12
 0.0
@@ -1051,10 +1051,10 @@ A graph displaying the difference between the wealth accumulated by everybody ve
 1
 
 TEXTBOX
-1702
-332
-1852
-482
+1477
+337
+1627
+487
 How much revenue the government is bringing in, based on how high or low the tax rates are. Higher tax rates may increase GDP and highten income inequaliity, along with slowing down price increase due to less capital and thus slower inflation. 
 12
 0.0
