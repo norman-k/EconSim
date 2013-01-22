@@ -60,7 +60,7 @@ to go
   let j []
   ask corporations[set h fput xcor h]
   ask corporations[set j fput ycor j]
-  ask persons[setxy item random(length h) h item random(length j) j]
+  ask corporations[if funding > 1000[ask persons[setxy item random(length h) h item random(length j) j]]]
   ask corporations[ask persons in-radius 3[set state "working"]]
   ask persons[if state != "working"[set wage 0]]
  ; ask persons[if wage < lb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
@@ -486,7 +486,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-76
+100
 1
 1
 NIL
@@ -627,7 +627,7 @@ capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-9
+17
 0.5
 1
 NIL
@@ -727,7 +727,7 @@ hb_threshold
 hb_threshold
 0
 100
-89
+88
 1
 1
 NIL
