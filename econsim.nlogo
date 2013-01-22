@@ -12,11 +12,6 @@ to setup
   ca
   set fed [1]
   reset-timer
-  create-persons 50 
-         [set shape "person"
-          set_wage
-          set capital wage
-         ]
   create-corporations 10
          [set shape "corporation"
           set funding 100
@@ -26,6 +21,11 @@ to setup
           setxy random-xcor random-ycor
           set price 5.00
           set supply 1000 * (count corporations)
+         ]
+  create-persons 50 
+         [set shape "person"
+          set_wage
+          set capital wage
          ]
    create-banks 2
          [set shape "bank"
@@ -38,8 +38,6 @@ to setup
          ]
 
    ask turtles[setup-plots]
-   
-   
 end
 to go
   
@@ -58,6 +56,13 @@ to go
     set supply supply + 1
   ]
   ]
+  let h []
+  let j []
+  ask corporations[set h fput xcor h]
+  ask corporations[set j fput ycor j]
+  ask persons[setxy item random(length h) h item random(length j) j]
+  ask corporations[ask persons in-radius 3[set state "working"]]
+  ask persons[if state != "working"[set wage 0]]
  ; ask persons[if wage < lb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
  ; ask persons[if wage >= lb_threshold and wage <= mb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
  ; ask persons[if wage > hb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
@@ -637,7 +642,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-100
+26
 1
 1
 NIL
@@ -692,7 +697,7 @@ lb_threshold
 lb_threshold
 0
 100
-1
+7
 1
 1
 NIL
@@ -826,7 +831,7 @@ mininum_wage
 mininum_wage
 0
 100
-17
+21
 1
 1
 NIL
@@ -870,7 +875,7 @@ required_reserve_ratio
 required_reserve_ratio
 0
 100
-41
+30
 1
 1
 NIL
@@ -1474,7 +1479,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.3
+NetLogo 5.0.2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
