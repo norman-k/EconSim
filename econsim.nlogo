@@ -481,7 +481,7 @@ corporate_tax_rates
 corporate_tax_rates
 0
 100
-0
+76
 1
 1
 NIL
@@ -622,7 +622,7 @@ capital_gains_tax_rates
 capital_gains_tax_rates
 0
 25
-17.5
+9
 0.5
 1
 NIL
@@ -637,7 +637,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-5
+100
 1
 1
 NIL
@@ -652,7 +652,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-39
+100
 1
 1
 NIL
@@ -667,7 +667,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-48
+68
 1
 1
 NIL
