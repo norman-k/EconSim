@@ -63,9 +63,9 @@ to go
   ask corporations[if funding > 1000[ask persons[setxy item random(length h) h item random(length j) j]]]
   ask corporations[ask persons in-radius 3[set state "working"]]
   ask persons[if state != "working"[set wage 0]]
- ; ask persons[if wage < lb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
- ; ask persons[if wage >= lb_threshold and wage <= mb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
- ; ask persons[if wage > hb_threshold[set capital wage - (lb_income_tax_rates * wage)]]
+ ;ask persons[if capital < lb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
+ ;ask persons[if capital >= lb_threshold and capital <= mb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
+ ;ask persons[if capital > hb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
 
   ;every 5[create-persons 50 
   ;       [set shape "person"
@@ -81,30 +81,35 @@ end
 to abolish_fed
   set fed []
 end
+to-report average_capital
+  let h []
+  ask persons[set h fput capital h]
+  report mean h
+end
 to-report equilibrium_price; ((a - c) / (b + d))
-  let a price + (capital / 100)
+  let a price + (average_capital / 100)
   let b 1.75 ; elastic
-  let f price - (capital / 100)
+  let f price - (average_capital / 100)
   let d 1.75 ; elastic
   let p ((a - f) / (b + d))
   report p
 end
 to-report equilibrium_quantity; (ad + bf/(b + d))
-  let a price + (capital / 100)
+  let a price + (average_capital / 100)
   let b 1.75 ; elastic
-  let f price - (capital / 100)
+  let f price - (average_capital / 100)
   let d 1.75 ; elastic
   let p ((a * d + b * f)/(b + d))
   report p
 end
 to-report demand_curve; P = a - bQd a is the highest price anyone would pay(reservation pay; remember paying anything less is a consumer surplus for the buyer which is (reservation price - market price)) and b is the slope (P = 0)
-  let a price + (capital / 100)
+  let a price + (average_capital / 100)
   let b 1.75 ; elastic
   let d a / b
   report d
 end
 to-report supply_curve; P = a - bQs a is the lowest price anyone would sell and b is the slope (p = 0)
-  let a price - (capital / 100)
+  let a price - (average_capital / 100)
   let b 1.75 ; elastic
   let d a / b
   report d
@@ -187,7 +192,7 @@ to-report unemployment_rate
 end
 to set_wage
   ifelse random(50) > 40
-     [set capital 30]
+     [set capital mininum_wage + 20]
      [ifelse random(50) > 5
        [set capital mininum_wage]
        [set capital 0]
@@ -287,7 +292,8 @@ to-report aggregate_person_spent
   report ((capital * count persons) + 1) / 40
 end
 to-report invest_per_person
-  report random(capital)
+  report 1
+  ;report random(capital)
 end
 to-report I
   report aggregate_firm_spent + aggregate_person_spent + invest_per_person
@@ -642,7 +648,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-26
+34
 1
 1
 NIL
@@ -672,7 +678,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-68
+100
 1
 1
 NIL
@@ -697,7 +703,7 @@ lb_threshold
 lb_threshold
 0
 100
-7
+9
 1
 1
 NIL
@@ -712,7 +718,7 @@ mb_threshold
 mb_threshold
 0
 100
-18
+10
 1
 1
 NIL
@@ -727,7 +733,7 @@ hb_threshold
 hb_threshold
 0
 100
-88
+14
 1
 1
 NIL
@@ -752,7 +758,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-1
+86517
 1
 1
 NIL
@@ -816,7 +822,7 @@ set_stimulus
 set_stimulus
 0
 100000
-8667
+6000
 1
 1
 NIL
@@ -831,7 +837,7 @@ mininum_wage
 mininum_wage
 0
 100
-21
+8
 1
 1
 NIL
@@ -875,7 +881,7 @@ required_reserve_ratio
 required_reserve_ratio
 0
 100
-30
+100
 1
 1
 NIL
