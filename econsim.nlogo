@@ -19,6 +19,7 @@ to setup
           set workers 4
           set size 5
           setxy random-xcor random-ycor
+          set heading 0
           set price 5.00
           set supply 1000 * (count corporations)
          ]
@@ -145,7 +146,8 @@ to gold
 end
 to austerity
    ask turtles[
-     if entitlement_spending > 0[set entitlement_spending ((%_gov_cuts / 100) * entitlement_spending)]
+     if entitlement_spending > 1[set entitlement_spending ((%_gov_cuts / 100) * entitlement_spending)]
+     if entitlement_spending < 1[set entitlement_spending 0]
    ] 
 ;    if timer < 7[set capital capital - 5
 ;                 set price price - 1
@@ -555,28 +557,6 @@ NIL
 NIL
 1
 
-MONITOR
-1097
-271
-1154
-316
-Deficit
-deficit
-17
-1
-11
-
-MONITOR
-1327
-271
-1385
-316
-Debt
-debt
-17
-1
-11
-
 PLOT
 1076
 94
@@ -652,7 +632,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-35
+57
 1
 1
 NIL
@@ -667,7 +647,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-70
+41
 1
 1
 NIL
@@ -722,7 +702,7 @@ mb_threshold
 mb_threshold
 0
 100
-84
+21
 1
 1
 NIL
@@ -737,7 +717,7 @@ hb_threshold
 hb_threshold
 0
 100
-12
+24
 1
 1
 NIL
@@ -762,7 +742,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-9551
+0
 1
 1
 NIL
@@ -841,7 +821,7 @@ mininum_wage
 mininum_wage
 0
 100
-4
+35
 1
 1
 NIL
@@ -1016,26 +996,6 @@ TEXTBOX
 1
 
 TEXTBOX
-1168
-280
-1318
-320
-How much you spend every second
-12
-0.0
-1
-
-TEXTBOX
-1399
-277
-1549
-337
-Total amount you spent since you pressed 'go'
-12
-0.0
-1
-
-TEXTBOX
 1255
 17
 1552
@@ -1120,8 +1080,8 @@ TEXTBOX
 332
 797
 482
-895
-NOTE: Banks are not in the simulation since the main focus of the simulation is on the prices the corporations set and where people go based on their pay and how the corporation is doing.
+909
+NOTE: Banks are not visually present in the simulation since the main focus of the simulation is on the prices the corporations set and where people go based on their pay and how the corporation is doing.
 11
 0.0
 1
