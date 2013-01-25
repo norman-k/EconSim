@@ -632,7 +632,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-57
+67
 1
 1
 NIL
@@ -647,7 +647,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-41
+71
 1
 1
 NIL
@@ -662,7 +662,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-58
+79
 1
 1
 NIL
@@ -742,7 +742,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-0
+100000
 1
 1
 NIL
@@ -1127,8 +1127,6 @@ Interesting phenomena to observe:
     Doubling both government spending and tax rates doubles GDP as well
 - Stagflation;
     Too much inflation will always cause unemployment to stay steady as more inflation       is introduced
-- Crowding Out Effect;
-    If the gov. finances its deficits(invests in private market) investment spending         decreases, which slow down aggregate expenditures(GDP + unplanned investments)
 - Multiplier Effect:
     Changes in aggregate expenditures can increase GDP since the money entering the          market is used over many times
 - Monetarist Equation of Exchange
@@ -1144,7 +1142,7 @@ Interesting phenomena to observe:
 
 Norman Kontarovich Period 6
 
-SPecial Thanks to Mr. Brooks
+Special Thanks to Mr. Brooks
 @#$#@#$#@
 default
 true
