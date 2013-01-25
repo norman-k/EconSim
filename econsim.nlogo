@@ -24,13 +24,12 @@ to setup
          ]
   create-persons 50 
          [set shape "person"
-          set_wage
-          set capital wage
+          set_capital
          ]
    create-banks 2
          [set shape "bank"
           set funding ((capital * ((count persons) / 2)) / 10)
-          set size 5
+          set size 0
           setxy random-xcor random-ycor
           set bank_rate 2
           set capital_gains required_reserve_ratio * 10
@@ -44,26 +43,30 @@ to go
   ;ask persons[face]
   ask turtles[setup-plots
   if price < equilibrium_price[
-  set price price + 1
+  set price price + 0.1
   ]
   if price > equilibrium_price[
-  set price price - 1
+  set price price - 0.1
   ]
   if supply < equilibrium_quantity[
-    set supply supply + 1
+    set supply supply + 0.1
   ]
   if supply > equilibrium_quantity[
-    set supply supply + 1
+    set supply supply - 0.1
   ]
   ]
+  ask persons[set_capital]
   let h []
   let j []
   ask corporations[set h fput xcor h]
   ask corporations[set j fput ycor j]
   ask corporations[if funding > 1000[ask persons[setxy item random(length h) h item random(length j) j]]]
   ask corporations[ask persons in-radius 3[set state "working"]]
-  ask persons[if state != "working"[set wage 0]]
- ;ask persons[if capital < lb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
+  ask persons[if state != "working"[set capital 0]]
+  ask persons[if capital < 2[set state "unemployed" setxy random-xcor random-ycor]]
+  ask persons[if funding < 2000[if random(1) > 0[set state "unemployed" setxy random-xcor random-ycor]]]
+ ;ask persons[if capital < lb_threshold[set capital 
+ ;capital - (lb_income_tax_rates * capital)]]
  ;ask persons[if capital >= lb_threshold and capital <= mb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
  ;ask persons[if capital > hb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
 
@@ -92,7 +95,8 @@ to-report equilibrium_price; ((a - c) / (b + d))
   let f price - (average_capital / 100)
   let d 1.75 ; elastic
   let p ((a - f) / (b + d))
-  report p
+  ifelse p = 0[report (p + (b))][
+  report p]
 end
 to-report equilibrium_quantity; (ad + bf/(b + d))
   let a price + (average_capital / 100)
@@ -155,8 +159,8 @@ to austerity
   ;lowers government spending and raises tax rates
 end
 to nit
-  ask persons[if wage < capital / 10[set lb_income_tax_rates 0]
-  if wage >= capital / 10 and wage <= capital / 20[set lb_income_tax_rates 5]]
+  ask persons[if capital < lb_threshold[set lb_income_tax_rates 0]
+  if capital >= lb_threshold / 10 and capital <= mb_threshold[set lb_income_tax_rates 5]]
 end
 to deregulate
   ;lowers corporate tax 2% every year for 10 years and gets rid of cap on recapitalization limits and lowers mininum wage to $5.50
@@ -188,9 +192,9 @@ to recapitalize
   
 end
 to-report unemployment_rate
-     report ((count persons with[ wage = 0]) / (count turtles) * 100)
+     report ((count persons with[ capital < 2.5]) / (count turtles) * 100)
 end
-to set_wage
+to set_capital
   ifelse random(50) > 40
      [set capital mininum_wage + 20]
      [ifelse random(50) > 5
@@ -199,13 +203,13 @@ to set_wage
      ]
 end
 to-report number_lb_people
-  report count persons with[ wage < lb_threshold]
+  report count persons with[ capital > lb_threshold and capital < mb_threshold]
 end
 to-report number_mb_people
-  report count persons with[ wage > mb_threshold and wage < hb_threshold]
+  report count persons with[ capital > mb_threshold and capital < hb_threshold]
 end
 to-report number_hb_people
-  report count persons with[ wage > hb_threshold]
+  report count persons with[ capital > hb_threshold]
 end
 to-report tax_revenue
   report (lb_income_tax_rates * number_lb_people) + (mb_income_tax_rates * number_mb_people) + (hb_income_tax_rates * number_hb_people) + (corporate_tax_rates * count corporations) + (capital_gains_tax_rates * count persons)
@@ -618,7 +622,7 @@ fed_interest_rates
 fed_interest_rates
 0
 15
-11.8
+9.5
 0.1
 1
 NIL
@@ -648,7 +652,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-34
+35
 1
 1
 NIL
@@ -663,7 +667,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-100
+70
 1
 1
 NIL
@@ -678,7 +682,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-100
+58
 1
 1
 NIL
@@ -703,7 +707,7 @@ lb_threshold
 lb_threshold
 0
 100
-9
+8
 1
 1
 NIL
@@ -718,7 +722,7 @@ mb_threshold
 mb_threshold
 0
 100
-10
+84
 1
 1
 NIL
@@ -733,7 +737,7 @@ hb_threshold
 hb_threshold
 0
 100
-14
+12
 1
 1
 NIL
@@ -758,7 +762,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-86517
+9551
 1
 1
 NIL
@@ -822,7 +826,7 @@ set_stimulus
 set_stimulus
 0
 100000
-6000
+100000
 1
 1
 NIL
@@ -837,7 +841,7 @@ mininum_wage
 mininum_wage
 0
 100
-8
+4
 1
 1
 NIL
@@ -881,7 +885,7 @@ required_reserve_ratio
 required_reserve_ratio
 0
 100
-100
+26
 1
 1
 NIL
@@ -1112,6 +1116,26 @@ The money multiplier is just (1 / required_reserve ratio). It tells you the maxi
 0.0
 1
 
+TEXTBOX
+332
+797
+482
+895
+NOTE: Banks are not in the simulation since the main focus of the simulation is on the prices the corporations set and where people go based on their pay and how the corporation is doing.
+11
+0.0
+1
+
+TEXTBOX
+515
+529
+665
+577
+threshold = If you earn this much or more, you get taxes by x%
+13
+0.0
+1
+
 @#$#@#$#@
 ## About
 
@@ -1123,6 +1147,8 @@ Using the law of supply and demand along with various other recorded economic ph
 
 
 The user simply plays around with the income tax rate and corporate tax rate sliders, and the buttons under certain brances of macroeconomic theory which dictate certain patterns to follow when some action is taken by the buttons. The user will learn various phenomena proposed by those schools of thought by playing around with the rules in a simulated market and seeing what happens to the market's well-being. 
+
+NOTE: Banks are not in the simulation since the main focus of the simulation is on the prices the corporations set and where people go based on their pay and how the corporation is doing.
 
 ## Instructions
 The various amount of buttons/sliders control various aspects of the simulation. 
@@ -1150,16 +1176,15 @@ Interesting phenomena to observe:
 - Phillips Curve:
     This is a very interesting phenomena where if a lot of money is put into the market     inflation rates at first go crazy and unemployment goes down, but then it               stagflates by itself over time. 
 - AD/AS longrun:
-    When there is a sudden increase in capital, either through tax decreases or             stimulus packages, aggregate demand slowly rises up while overtime supply shoots up      so fast that it looks like a vertical line. What happens in the shortrun is still        debated between economists today, with some economists saying that there is a slow       rise with AS and others saying that it stays horizontal.
- 
-##LearnMore
-Frictional Unemployment - unemployment that happens because one job is too far from another
-Cyclical Unemployment - unemployment that results from disruptions in the economy(such as a recession or depression)
-Structural Unemployment- Demand for one's occupation or skills that one has can not get them a job
-Seasonal unemployment - Person can only work certain times of a year
+    When there is a sudden increase in capital, either through tax decreases or             stimulus packages, aggregate demand slowly rises up while in the long run supply        looks like a vertical line when graphed. What happens in the shortrun is still          debated between economists today, with some economists saying that there is a           slow rise with AS and others saying that it stays horizontal.
+- Frictional Unemployment 
+    Unemployment that happens because one job is too far from where a person lives,         you'll notice this quite a bit in the simulation.
+
 ## Credits
 
-Norman 
+Norman Kontarovich Period 6
+
+SPecial Thanks to Mr. Brooks
 @#$#@#$#@
 default
 true
