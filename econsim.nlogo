@@ -66,10 +66,10 @@ to go
   ask persons[if state != "working"[set capital 0]]
   ask persons[if capital < 2[set state "unemployed" setxy random-xcor random-ycor]]
   ask persons[if funding < 2000[if random(1) > 0[set state "unemployed" setxy random-xcor random-ycor]]]
- ;ask persons[if capital < lb_threshold[set capital 
- ;capital - (lb_income_tax_rates * capital)]]
- ;ask persons[if capital >= lb_threshold and capital <= mb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
- ;ask persons[if capital > hb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
+  ask persons[if capital > lb_threshold and capital < mb_threshold[set capital 
+  capital - (lb_income_tax_rates * capital)]]
+  ask persons[if capital >= mb_threshold and capital <= hb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
+  ask persons[if capital > hb_threshold[set capital capital - (lb_income_tax_rates * capital)]]
 
   ;every 5[create-persons 50 
   ;       [set shape "person"
@@ -96,7 +96,7 @@ to-report equilibrium_price; ((a - c) / (b + d))
   let f price - (average_capital / 100)
   let d 1.75 ; elastic
   let p ((a - f) / (b + d))
-  ifelse p = 0[report (p + (b))][
+  ifelse p <= 0[report (p + (b))][
   report p]
 end
 to-report equilibrium_quantity; (ad + bf/(b + d))
@@ -632,7 +632,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-67
+64
 1
 1
 NIL
@@ -647,7 +647,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-71
+79
 1
 1
 NIL
@@ -662,7 +662,7 @@ hb_income_tax_rates
 hb_income_tax_rates
 0
 100
-79
+78
 1
 1
 NIL
@@ -821,7 +821,7 @@ mininum_wage
 mininum_wage
 0
 100
-35
+5
 1
 1
 NIL
