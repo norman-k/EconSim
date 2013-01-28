@@ -495,10 +495,10 @@ PENS
 "Inflat." 1.0 0 -15582384 true "ask turtles[plot inflation_rate]" "ask turtles[plot inflation_rate]"
 
 PLOT
-1199
-700
-1427
-850
+1227
+705
+1455
+855
 IS/LM
 GDP
 Interest Rates
@@ -529,10 +529,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1236
-336
-1470
-486
+1264
+341
+1498
+491
 Laffer Curve
 Tax Revenue
 Tax Rate
@@ -626,7 +626,7 @@ fed_interest_rates
 fed_interest_rates
 0
 15
-9.5
+6.7
 0.1
 1
 NIL
@@ -656,7 +656,7 @@ lb_income_tax_rates
 lb_income_tax_rates
 0
 100
-64
+50
 1
 1
 NIL
@@ -711,7 +711,7 @@ lb_threshold
 lb_threshold
 0
 100
-8
+13
 1
 1
 NIL
@@ -741,17 +741,17 @@ hb_threshold
 hb_threshold
 0
 100
-24
+15
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-1260
-863
-1410
-902
+1288
+866
+1438
+905
 GDP = private consumption + gross investment + government spending + (exports − imports)
 10
 0.0
@@ -774,9 +774,9 @@ HORIZONTAL
 
 TEXTBOX
 1168
-526
+528
 1318
-546
+548
 NIL
 16
 0.0
@@ -802,10 +802,10 @@ PENS
 "Wealth" 1.0 0 -14985354 true "ask turtles[plot aggregate_capital]" "ask turtles[plot aggregate_capital]"
 
 TEXTBOX
-1261
-910
-1411
-952
+1289
+913
+1439
+955
 Since the simulation is a closed system, (exports - imports) = 0.
 11
 0.0
@@ -845,7 +845,7 @@ mininum_wage
 mininum_wage
 0
 100
-5
+3
 1
 1
 NIL
@@ -911,10 +911,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1198
-517
-1424
-667
+1226
+522
+1452
+672
 AD-AS Model
 GDP
 Price
@@ -1050,30 +1050,30 @@ A graph displaying the difference between the wealth accumulated by everybody ve
 1
 
 TEXTBOX
-1477
-337
-1627
-487
+1505
+340
+1655
+490
 How much revenue the government is bringing in, based on how high or low the tax rates are. Higher tax rates may increase GDP and highten income inequaliity, along with slowing down price increase due to less capital and thus slower inflation. 
 12
 0.0
 1
 
 TEXTBOX
-1436
-493
-1592
-703
+1464
+496
+1620
+706
 A graph relating the demand felt throughout the whole economy to the total supply of goods available. In general, over the long-term, any increase in capital would slowly increase the aggregate demand(AD) while sharply increasing the aggregate supply(AS). So much so that AS will appear as a vertical line to the user.
 12
 0.0
 1
 
 TEXTBOX
-1436
-698
-1603
-923
+1464
+701
+1631
+926
 A graph relating FED_interest_rates with GDP growth. GDP, a calculation of all products and services avaiable in an economy, generally rises with increases in capital and inflation. It will also fall if government spending decreases, as that is taken into account as well. In general FED_interest_rates should be changed to help GDP perform an upward trend.
 12
 0.0
@@ -1101,10 +1101,10 @@ The money multiplier is just (1 / required_reserve ratio). It tells you the maxi
 1
 
 TEXTBOX
-263
-803
-413
-915
+44
+790
+194
+902
 NOTE: Banks are not visually present in the simulation since the main focus of the simulation is on the prices the corporations set and where people go based on their pay and how the corporation is doing.
 11
 0.0
@@ -1121,20 +1121,20 @@ threshold = If you earn this much or more, you get taxed by x%
 1
 
 TEXTBOX
-1937
-409
-2152
-522
+1658
+576
+1873
+689
 GDP = Compensation of employees + Rents + Interest + Proprietors’ income +\nCorporate profits (Corporate income taxes + dividends + undistributed corporate\nprofits) + indirect business taxes + depreciation (consumption of fixed capital) + net\nforeign factor income
 11
 0.0
 1
 
 PLOT
-1920
-586
-2120
-736
+1641
+753
+1841
+903
 Production Possibilities Curve
 NIL
 NIL
@@ -1149,10 +1149,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count turtles"
 
 MONITOR
-1935
-345
-2101
-398
+1656
+512
+1822
+565
 GDP(Income Approach)
 GDP_income_approach
 17
@@ -1160,10 +1160,10 @@ GDP_income_approach
 13
 
 MONITOR
-1982
-526
-2039
-579
+1708
+693
+1765
+746
 PI
 Personal_Income
 17
@@ -1171,10 +1171,10 @@ Personal_Income
 13
 
 MONITOR
-1919
-526
-1976
-579
+1640
+693
+1697
+746
 NI
 National_Income
 17
@@ -1182,10 +1182,10 @@ National_Income
 13
 
 MONITOR
-2048
-526
-2105
-579
+1781
+695
+1838
+748
 DI
 Domestic_Income
 17
@@ -1193,10 +1193,10 @@ Domestic_Income
 13
 
 MONITOR
-161
-1080
-218
-1133
+230
+793
+287
+846
 NIL
 M1
 17
@@ -1204,10 +1204,10 @@ M1
 13
 
 MONITOR
-306
-1079
-363
-1132
+315
+793
+372
+846
 NIL
 M2
 17
@@ -1215,10 +1215,10 @@ M2
 13
 
 MONITOR
-438
-1078
-495
-1131
+399
+793
+456
+846
 NIL
 M3
 17
