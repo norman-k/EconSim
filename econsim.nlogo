@@ -2,6 +2,7 @@ breed [persons person]
 breed [corporations corporation]
 breed [banks bank]
 breed [national_banks national_bank]
+breed [houses house]
 turtles-own [capital funding workers wage price supply state inflation bank_rate firm_spent person_spent dividents bank_employers capital_gains dividends]
 globals[fed bond]
 
@@ -333,7 +334,30 @@ to-report aggregate_supply; Y = Y* + α·(P-Pe)
     let P price
     let Pj equilibrium_price
     report (y + a * (P - Pj))
-  
+end
+to-report compensation_of_employees
+  report aggregate_capital
+end
+to-report rents
+  report (capital / 2)
+end
+to-report interest
+  report Fed_interest_rates
+end
+to-report corporate_profits
+  report corporate_tax_rates + (dividends * (count banks)) + funding
+end
+to-report GDP_income_approach
+  ask turtles[report Compensation_of_employees + Rents + Interest + Corporate_profits]
+end
+to-report national_income
+  report 0
+end
+to-report personal_income
+  report 0
+end
+to-report domestic_income
+  report 0
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -594,10 +618,10 @@ PENS
 "Supply" 1.0 0 -14454117 true "ask turtles[plot supply]" "ask turtles[plot supply]"
 
 SLIDER
-357
-669
-543
-702
+288
+675
+474
+708
 fed_interest_rates
 fed_interest_rates
 0
@@ -647,7 +671,7 @@ mb_income_tax_rates
 mb_income_tax_rates
 0
 100
-79
+80
 1
 1
 NIL
@@ -742,7 +766,7 @@ entitlement_spending
 entitlement_spending
 0
 100000
-100000
+62360
 1
 1
 NIL
@@ -847,20 +871,20 @@ PENS
 "P" 1.0 0 -14454117 true "ask turtles[plot equilibrium_price]" "ask turtles[plot equilibrium_price]"
 
 TEXTBOX
-440
-629
-660
-669
+245
+636
+465
+676
 = = FED/Monetary Policy = =
 16
 0.0
 1
 
 SLIDER
-81
-668
-325
-701
+12
+674
+256
+707
 required_reserve_ratio
 required_reserve_ratio
 0
@@ -920,26 +944,26 @@ TEXTBOX
 11
 184
 180
-WELCOME:\nKey terms:\nCapital: Money\nCapital gains: Money earned through investments\nCorporations: Businesses\nEntitlement: Social services\nMininum Wage: Lowest salary allowed\nThreshold: Maxium  amount a tax rate applies to\nLook around and explore the other notes! 
+WELCOME:\nKey terms:\nCapital: Money\nCapital gains: Money earned through investments\nCorporations: Businesses\nEntitlement: Social services\nMininum Wage: Lowest salary allowed\nThreshold: Mininum amount a tax rate applies to\nLook around and explore the other notes! 
 10
 0.0
 1
 
 TEXTBOX
-582
-664
-828
-772
+513
+670
+759
+778
 The FED, or Federal Reserve, controls monetary policy. I.e. it dictates how much a bank can borrow and how much money must be in a bank.
 12
 0.0
 1
 
 TEXTBOX
-115
-706
-265
-826
+46
+712
+196
+832
 The reserve requirement is the mininum number of deposits or invetsments that a bank must have. 
 12
 0.0
@@ -1056,10 +1080,10 @@ A graph relating FED_interest_rates with GDP growth. GDP, a calculation of all p
 1
 
 MONITOR
-299
-722
-525
-787
+230
+728
+456
+793
 Money Multiplier
 1 / required_reserve_ratio
 17
@@ -1067,20 +1091,20 @@ Money Multiplier
 16
 
 TEXTBOX
-536
-730
-686
-805
+467
+736
+617
+811
 The money multiplier is just (1 / required_reserve ratio). It tells you the maximum amount of loans a bank can give
 12
 0.0
 1
 
 TEXTBOX
-332
-797
-482
-909
+263
+803
+413
+915
 NOTE: Banks are not visually present in the simulation since the main focus of the simulation is on the prices the corporations set and where people go based on their pay and how the corporation is doing.
 11
 0.0
@@ -1091,10 +1115,115 @@ TEXTBOX
 529
 665
 577
-threshold = If you earn this much or more, you get taxes by x%
+threshold = If you earn this much or more, you get taxed by x%
 13
 0.0
 1
+
+TEXTBOX
+1937
+409
+2152
+522
+GDP = Compensation of employees + Rents + Interest + Proprietors’ income +\nCorporate profits (Corporate income taxes + dividends + undistributed corporate\nprofits) + indirect business taxes + depreciation (consumption of fixed capital) + net\nforeign factor income
+11
+0.0
+1
+
+PLOT
+1920
+586
+2120
+736
+Production Possibilities Curve
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles"
+
+MONITOR
+1935
+345
+2101
+398
+GDP(Income Approach)
+GDP_income_approach
+17
+1
+13
+
+MONITOR
+1982
+526
+2039
+579
+PI
+Personal_Income
+17
+1
+13
+
+MONITOR
+1919
+526
+1976
+579
+NI
+National_Income
+17
+1
+13
+
+MONITOR
+2048
+526
+2105
+579
+DI
+Domestic_Income
+17
+1
+13
+
+MONITOR
+161
+1080
+218
+1133
+NIL
+M1
+17
+1
+13
+
+MONITOR
+306
+1079
+363
+1132
+NIL
+M2
+17
+1
+13
+
+MONITOR
+438
+1078
+495
+1131
+NIL
+M3
+17
+1
+13
 
 @#$#@#$#@
 ## About
@@ -1114,9 +1243,11 @@ NOTE: Banks are not in the simulation since the main focus of the simulation is 
 The various amount of buttons/sliders control various aspects of the simulation. 
 
 Tax Rates:
- On the bottom and the side are various sliders for different brackets of income or corporate/capital gains tax rates. Income brakcets are determined by the thresholds the users set with the sliders below. I.e. the maximum income needed for the tax to apply. This various tax rates can then influence the laffer curve, i.e. how much revenue is received.
+ On the bottom and the side are various sliders for different brackets of income or corporate/capital gains tax rates. Income brakcets are determined by the thresholds the users set with the sliders below. I.e. the mininum income needed for the tax to apply. This various tax rates can then influence the laffer curve, i.e. how much revenue is received.
  FED:
  Under the FED section the user can control at what rate banks can borrow money from   the FED and how many deposits the banks must have. 
+
+Remember economics is all about optimal allocation of scarce resources. The means of producing some good or service are limited.
 
 ##WhatShouldIBeSeeing?
 REMEMBER: The red denotes the x-axis and the yellow the y-axis
