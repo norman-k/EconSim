@@ -1166,7 +1166,7 @@ Interesting phenomena to observe:
 
 ## Credits
 
-Norman Kontarovich Period 6
+Norman Period 6
 
 Special Thanks to Mr. Brooks
 @#$#@#$#@
