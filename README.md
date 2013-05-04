@@ -1,4 +1,4 @@
 EconSim
 =======
 
-Simulates a closed economics system with various macroeconomic tickers
+Simulates a closed economic system with various macroeconomic tickers
